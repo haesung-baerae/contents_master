@@ -16,8 +16,10 @@ st.set_page_config(
 st.markdown("""
 <style>
     .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
     }
     .stButton button {
         background-color: #f0f0f0;
@@ -27,6 +29,7 @@ st.markdown("""
     }
     .stTextInput > div > div > input {
         background-color: #f0f0f0;
+        max-width: 100%;
     }
     .stSelectbox > div > div > div {
         background-color: #f0f0f0;
@@ -38,15 +41,24 @@ st.markdown("""
         margin-bottom: 20px;
     }
     .header {
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
         text-align: center;
         margin-bottom: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background-color: #111;
+        color: white;
+        border-radius: 5px;
     }
     .subheader {
         font-size: 18px;
         font-weight: bold;
         margin-bottom: 10px;
+    }
+    .input-container {
+        max-width: 600px;
+        margin: 0 auto;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -135,11 +147,18 @@ def show_step_1():
     
     # 주제입력
     st.markdown("<div class='subheader'>주제입력</div>", unsafe_allow_html=True)
-    keyword = st.text_input("", key="keyword_input", label_visibility="collapsed")
     
-    col_search, _ = st.columns([1, 3])
-    with col_search:
-        search_button = st.button("콘텐츠 검색", use_container_width=True)
+    # 입력 폼을 적절한 너비로 제한
+    with st.container():
+        col1, col2, col3 = st.columns([1, 3, 1])
+        with col2:
+            keyword = st.text_input("", key="keyword_input", label_visibility="collapsed")
+    
+    # 검색 버튼 가운데 정렬
+    with st.container():
+        col1, col2, col3 = st.columns([3, 1, 3])
+        with col2:
+            search_button = st.button("콘텐츠 검색", use_container_width=True)
     
     # 검색 버튼 클릭 시 추천 영상 로드
     if search_button and keyword:
@@ -147,45 +166,78 @@ def show_step_1():
     
     # 인기 콘텐츠 TOP3 표시
     if st.session_state.recommended_videos:
-        st.markdown("<div class='subheader'>인기 콘텐츠 TOP3</div>", unsafe_allow_html=True)
-        st.markdown("원하시는 콘텐츠를 선택해주세요.", unsafe_allow_html=True)
-        
-        for i, video in enumerate(st.session_state.recommended_videos):
-            col_vid, col_btn = st.columns([3, 1])
-            with col_vid:
-                st.markdown(f"{i+1}.제목: {video['title']}")
-                st.markdown(f"[영상 보기]({video['link']})", unsafe_allow_html=True)
-            with col_btn:
-                if st.button(f"선택", key=f"select_btn_{i}"):
-                    st.session_state.selected_video = video
-                    st.session_state.confirmed_selection = False
+        # 결과를 가운데 컨테이너에 표시
+        with st.container():
+            col1, col2, col3 = st.columns([1, 3, 1])
+            with col2:
+                st.markdown("<div class='subheader' style='text-align: center;'>인기 콘텐츠 TOP3</div>", unsafe_allow_html=True)
+                st.markdown("<div style='text-align: center; margin-bottom: 15px;'>원하시는 콘텐츠를 선택해주세요.</div>", unsafe_allow_html=True)
+                
+                # 비디오 목록을 카드 형식으로 표시
+                for i, video in enumerate(st.session_state.recommended_videos):
+                    st.markdown(f"""
+                    <div style='
+                        border: 1px solid #ddd; 
+                        border-radius: 5px; 
+                        padding: 10px; 
+                        margin-bottom: 10px;
+                        background-color: #f8f9fa;
+                    '>
+                        <div style='font-weight: bold;'>{i+1}.제목: {video['title']}</div>
+                        <div style='margin: 5px 0;'><a href='{video['link']}' target='_blank'>영상 보기</a></div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    if st.button(f"선택", key=f"select_btn_{i}", use_container_width=True):
+                        st.session_state.selected_video = video
+                        st.session_state.confirmed_selection = False
     
     # 선택한 비디오 확인
     if st.session_state.selected_video:
-        st.markdown("<div class='subheader'>2.제목</div>", unsafe_allow_html=True)
-        st.markdown(f"선택한 콘텐츠로 진행하시겠습니까?", unsafe_allow_html=True)
-        st.markdown(f"**선택된 영상:** {st.session_state.selected_video['title']}")
-        
-        yes_col, no_col = st.columns(2)
-        with yes_col:
-            if st.button("YES", use_container_width=True):
-                go_to_next_step()
-        with no_col:
-            if st.button("다시 선택", use_container_width=True):
-                st.session_state.selected_video = None
+        with st.container():
+            col1, col2, col3 = st.columns([1, 3, 1])
+            with col2:
+                st.markdown("<div class='subheader' style='text-align: center; margin-top: 20px;'>선택 확인</div>", unsafe_allow_html=True)
+                st.markdown(f"""
+                <div style='
+                    text-align: center; 
+                    margin: 15px 0; 
+                    padding: 15px; 
+                    background-color: #f0f7ff; 
+                    border-radius: 5px;
+                    border: 1px solid #c5d5e5;
+                '>
+                    선택한 콘텐츠로 진행하시겠습니까?<br><br>
+                    <strong>선택된 영상:</strong> {st.session_state.selected_video['title']}
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # 버튼을 좀 더 예쁘게 배치
+                yes_col, no_col = st.columns(2)
+                with yes_col:
+                    if st.button("YES", use_container_width=True, type="primary"):
+                        go_to_next_step()
+                with no_col:
+                    if st.button("다시 선택", use_container_width=True):
+                        st.session_state.selected_video = None
 
 # 스텝 2: 콘텐츠 만들기 (스타일, 타겟층 등 설정)
 def show_step_2():
     st.markdown("<div class='header'>콘텐츠 만들기</div>", unsafe_allow_html=True)
-    st.markdown("원하시는 스타일로 선택해주세요.", unsafe_allow_html=True)
     
-    # 선택된 비디오 표시
-    st.markdown(f"**선택된 영상:** {st.session_state.selected_video['title']}")
-    st.markdown(f"[영상 링크]({st.session_state.selected_video['link']})")
-    
-    # 타겟층
-    st.markdown("<div class='subheader'>타겟층</div>", unsafe_allow_html=True)
-    target_audience = st.text_input("", key="target_audience_input", value=st.session_state.target_audience, label_visibility="collapsed")
+    # 내용을 가운데로 정렬
+    with st.container():
+        col1, col2, col3 = st.columns([1, 3, 1])
+        with col2:
+            st.markdown("<div style='text-align: center;'>원하시는 스타일로 선택해주세요.</div>", unsafe_allow_html=True)
+            
+            # 선택된 비디오 표시
+            st.markdown(f"<div style='text-align: center; margin: 20px 0;'><strong>선택된 영상:</strong> {st.session_state.selected_video['title']}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align: center;'><a href='{st.session_state.selected_video['link']}' target='_blank'>영상 링크</a></div>", unsafe_allow_html=True)
+            
+            # 타겟층
+            st.markdown("<div class='subheader' style='text-align: center; margin-top: 20px;'>타겟층</div>", unsafe_allow_html=True)
+            target_audience = st.text_input("", key="target_audience_input", value=st.session_state.target_audience, label_visibility="collapsed")
     st.session_state.target_audience = target_audience
     
     # 톤/스타일
@@ -288,28 +340,35 @@ def show_step_2():
 def show_step_3():
     st.markdown("<div class='header'>콘텐츠 생성완료</div>", unsafe_allow_html=True)
     
-    # 선택된 비디오 및 설정 요약
-    st.markdown("### 선택된 옵션:")
-    st.markdown(f"**영상:** {st.session_state.selected_video['title']}")
-    st.markdown(f"**타겟층:** {st.session_state.target_audience}")
-    st.markdown(f"**톤/스타일:** {st.session_state.tone_style}")
-    st.markdown(f"**목표:** {st.session_state.goal}")
-    st.markdown(f"**글자수:** {st.session_state.word_count}")
-    
-    # 생성된 콘텐츠 표시
-    st.markdown("### 생성된 콘텐츠:")
-    content_area = st.text_area("", value=st.session_state.generated_content, height=300, label_visibility="collapsed")
-    
-    # 버튼
-    back_col, copy_col = st.columns(2)
-    
-    with back_col:
-        if st.button("다시 설정하기", use_container_width=True):
-            go_to_previous_step()
+    # 내용을 가운데 정렬
+    with st.container():
+        col1, col2, col3 = st.columns([1, 3, 1])
+        with col2:
+            # 선택된 비디오 및 설정 요약
+            st.markdown("<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+            st.markdown("<h4 style='text-align: center; margin-bottom: 10px;'>선택된 옵션</h4>", unsafe_allow_html=True)
+            st.markdown(f"<div><strong>영상:</strong> {st.session_state.selected_video['title']}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div><strong>타겟층:</strong> {st.session_state.target_audience}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div><strong>톤/스타일:</strong> {st.session_state.tone_style}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div><strong>목표:</strong> {st.session_state.goal}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div><strong>글자수:</strong> {st.session_state.word_count}</div>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
             
-    with copy_col:
-        if st.button("복사하기", use_container_width=True):
-            st.success("콘텐츠가 클립보드에 복사되었습니다!")
+            # 생성된 콘텐츠 표시
+            st.markdown("<h4 style='text-align: center; margin: 20px 0;'>생성된 콘텐츠</h4>", unsafe_allow_html=True)
+            content_area = st.text_area("", value=st.session_state.generated_content, height=300, label_visibility="collapsed")
+            
+            # 버튼 - 중앙 정렬 및 여백 추가
+            st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+            back_col, copy_col = st.columns(2)
+            
+            with back_col:
+                if st.button("다시 설정하기", use_container_width=True):
+                    go_to_previous_step()
+                    
+            with copy_col:
+                if st.button("복사하기", use_container_width=True):
+                    st.success("콘텐츠가 클립보드에 복사되었습니다!")
 
 # 현재 단계에 따라 올바른 화면 표시
 if st.session_state.step == 1:
