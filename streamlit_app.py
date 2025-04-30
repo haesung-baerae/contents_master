@@ -162,4 +162,4 @@ elif st.session_state.step == 2:
         st.session_state.goal = st.radio("목표 선택", ["정보전달", "설득력", "구매유도"], horizontal=True, index=["정보전달", "설득력", "구매유도"].index(st.session_state.goal))
 
         st.markdown("<div class='subheader'>글자수</div>", unsafe_allow_html=True)
-        st.session_state.word_count = st.radio("글자수 선택", ["500자내외", "1000자내외", "1500자내]()
+        st.session_state.word_count = st.radio("글자수 선택", ["500자내외", "1000자내외", "1500자내외"]()
