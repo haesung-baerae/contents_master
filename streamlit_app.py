@@ -8,12 +8,12 @@ import streamlit.components.v1 as components
 # --------------------------------------------------------------------
 st.set_page_config(
     page_title="콘텐츠 마스터",
-    layout="centered",  # wide에서 centered로 변경
+    layout="centered",  # centered 레이아웃 유지
     initial_sidebar_state="collapsed",
 )
 
 # --------------------------------------------------------------------
-# 향상된 전역 CSS 스타일  
+# 향상된 전역 CSS 스타일 - 더 컴팩트하게 조정
 # --------------------------------------------------------------------
 st.markdown(
     """
@@ -23,141 +23,145 @@ st.markdown(
             background-color: #f8f9fa;
         }
         
-        /* 컨테이너 너비 조정 */
+        /* 컨테이너 너비 조정 - 더 좁게 */
         .block-container {
-            max-width: 800px;
-            padding-top: 2rem;
-            padding-bottom: 2rem;
+            max-width: 600px !important;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
         }
         
-        /* 헤더 스타일 */
+        /* 헤더 스타일 - 더 컴팩트하게 */
         .header {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: bold;
             text-align: center;
-            margin: 20px 0;
-            padding: 30px;
+            margin: 12px 0;
+            padding: 20px;
             background: linear-gradient(135deg, #2c3e50, #4c6ef5);
             color: #fff;
-            border-radius: 12px;
+            border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        /* 서브헤더 스타일 */
+        /* 서브헤더 스타일 - 더 컴팩트하게 */
         .subheader {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             text-align: center;
-            margin: 18px 0 12px 0;
+            margin: 10px 0 8px 0;
             color: #2c3e50;
             border-bottom: 2px solid #4c6ef5;
-            padding-bottom: 8px;
+            padding-bottom: 5px;
         }
         
         /* 텍스트 입력 스타일 */
         .stTextInput input {
-            border-radius: 8px;
-            border: 2px solid #e0e5ec;
-            padding: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border-radius: 6px;
+            border: 1px solid #e0e5ec;
+            padding: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
         /* 텍스트 영역 스타일 */
         .stTextArea textarea {
             background: #fff;
             color: #333;
-            border: 2px solid #e0e5ec;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            font-size: 16px;
+            border: 1px solid #e0e5ec;
+            border-radius: 6px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 14px;
         }
         
-        /* 버튼 스타일 */
+        /* 버튼 스타일 - 더 작게 */
         .stButton button {
-            border-radius: 8px;
-            padding: 8px 16px;
+            border-radius: 6px;
+            padding: 6px 12px;
             font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            font-size: 14px;
         }
         
         .stButton button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
         }
         
-        /* 카드 스타일 */
+        /* 카드 스타일 - 더 컴팩트하게 */
         .content-card {
             border: none;
-            border-radius: 12px;
-            padding: 16px;
-            margin: 12px 0;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
             background: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
         }
         
         .content-card:hover {
-            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
         }
         
-        /* 단계 표시기 */
+        /* 단계 표시기 - 더 작게 */
         .step-indicator {
             display: flex;
             justify-content: center;
-            margin: 24px 0;
+            margin: 15px 0;
         }
         
         .step {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background: #e0e5ec;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 20px;
+            margin: 0 15px;
             font-weight: bold;
             position: relative;
+            font-size: 14px;
         }
         
         .step.active {
             background: #4c6ef5;
             color: white;
-            box-shadow: 0 4px 8px rgba(76, 110, 245, 0.3);
+            box-shadow: 0 3px 6px rgba(76, 110, 245, 0.3);
         }
         
         .step-line {
-            height: 4px;
+            height: 3px;
             background: #e0e5ec;
             flex-grow: 1;
             position: relative;
-            top: 20px;
+            top: 15px;
         }
         
         .step-line.active {
             background: #4c6ef5;
         }
         
-        /* 메시지 스타일 */
+        /* 메시지 스타일 - 더 컴팩트하게 */
         .info-box {
             background-color: #e3f2fd;
             color: #0d47a1;
-            padding: 16px;
-            border-radius: 8px;
-            border-left: 5px solid #2196f3;
-            margin: 16px 0;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #2196f3;
+            margin: 10px 0;
+            font-size: 14px;
         }
         
         .success-box {
             background-color: #e8f5e9;
             color: #1b5e20;
-            padding: 16px;
-            border-radius: 8px;
-            border-left: 5px solid #4caf50;
-            margin: 16px 0;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #4caf50;
+            margin: 10px 0;
+            font-size: 14px;
         }
         
         /* 옵션 버튼 스타일 */
@@ -168,8 +172,41 @@ st.markdown(
         
         .option-button {
             background: #f8f9fa;
-            border: 2px solid #e0e5ec !important;
+            border: 1px solid #e0e5ec !important;
             color: #555 !important;
+        }
+        
+        /* 전체 간격 조정 */
+        .row-widget {
+            margin-bottom: 6px !important;
+        }
+        
+        /* 요약 카드 스타일 - 더 컴팩트하게 */
+        .summary-card {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            border-left: 3px solid #4c6ef5;
+            font-size: 13px;
+        }
+        
+        /* 복사 버튼 컨테이너 높이 조정 */
+        .copy-button-container {
+            height: 45px !important;
+        }
+        
+        /* 경고 메시지 스타일 */
+        .stAlert {
+            padding: 8px !important;
+            font-size: 14px !important;
+        }
+        
+        /* 이미지 인디케이터 숫자 크기 */
+        .number-indicator {
+            width: 24px;
+            height: 24px;
+            font-size: 13px;
         }
     </style>
     """,
@@ -249,20 +286,20 @@ def render_step_indicator(current_step, total_steps=3):
     st.markdown(step_html, unsafe_allow_html=True)
 
 # --------------------------------------------------------------------
-# 복사 버튼 컴포넌트
+# 복사 버튼 컴포넌트 - 더 컴팩트하게 높이 조정
 # --------------------------------------------------------------------
 
 def copy_button(text: str):
     js_literal = json.dumps(text)
     html = f"""
         <button onclick='navigator.clipboard.writeText({js_literal});alert("클립보드에 복사되었습니다!");' 
-                style='width:100%;padding:12px;background:linear-gradient(135deg, #4CAF50, #2E7D32);
-                color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;
-                box-shadow:0 2px 10px rgba(46,125,50,0.3);transition:all 0.3s;'>
+                style='width:100%;padding:8px;background:linear-gradient(135deg, #4CAF50, #2E7D32);
+                color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;
+                box-shadow:0 2px 8px rgba(46,125,50,0.3);transition:all 0.3s;font-size:14px;'>
             📋 클립보드에 복사하기
         </button>
     """
-    components.html(html, height=60)
+    components.html(html, height=45)
 
 # --------------------------------------------------------------------
 # STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
@@ -275,7 +312,8 @@ def step_1():
     # ─── 주제 입력 ─── 
     st.markdown("<div class='subheader'>주제 키워드 입력</div>", unsafe_allow_html=True)
     
-    col1, col2 = st.columns([3, 1])
+    # 4:1 비율로 변경하여 검색 버튼 더 컴팩트하게
+    col1, col2 = st.columns([4, 1])
     with col1:
         keyword = st.text_input("주제 키워드", key="keyword_input", label_visibility="collapsed", 
                               placeholder="분석하고 싶은 주제나 키워드를 입력하세요...")
@@ -283,7 +321,7 @@ def step_1():
     with col2:
         if st.button("🔍 검색", use_container_width=True, type="primary"):
             if keyword:
-                with st.spinner("관련 콘텐츠 검색중..."):
+                with st.spinner("검색중..."):
                     st.session_state.recommended_videos = get_youtube_recommendations(keyword)
                 st.rerun()
             else:
@@ -293,43 +331,47 @@ def step_1():
     if st.session_state.recommended_videos:
         st.markdown("<div class='subheader'>추천 인기 콘텐츠 TOP3</div>", unsafe_allow_html=True)
         
+        # 각 카드와 버튼을 한 줄에 배치하기 위한 컨테이너
         for i, v in enumerate(st.session_state.recommended_videos):
-            st.markdown(
-                f"""
-                <div class='content-card'>
-                    <div style='display:flex;align-items:center'>
-                        <div style='background:#4c6ef5;color:white;width:28px;height:28px;border-radius:50%;
-                                    display:flex;align-items:center;justify-content:center;margin-right:12px;
-                                    font-weight:bold;'>{i+1}</div>
-                        <div>
-                            <h3 style='margin:0;font-size:16px;color:#333'>{v['title']}</h3>
-                            <a href='{v['link']}' target='_blank' style='color:#4c6ef5;text-decoration:none;font-size:14px;'>
-                                🎬 영상 보기
-                            </a>
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.markdown(
+                    f"""
+                    <div class='content-card'>
+                        <div style='display:flex;align-items:center'>
+                            <div class='number-indicator' style='background:#4c6ef5;color:white;width:24px;height:24px;border-radius:50%;
+                                        display:flex;align-items:center;justify-content:center;margin-right:8px;
+                                        font-weight:bold;'>{i+1}</div>
+                            <div>
+                                <h3 style='margin:0;font-size:14px;color:#333'>{v['title']}</h3>
+                                <a href='{v['link']}' target='_blank' style='color:#4c6ef5;text-decoration:none;font-size:12px;'>
+                                    🎬 영상 보기
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            if st.button("선택하기", key=f"sel_{i}", use_container_width=True):
-                st.session_state.selected_video = v
-                st.rerun()
+                    """,
+                    unsafe_allow_html=True,
+                )
+            with col2:
+                if st.button("선택", key=f"sel_{i}", use_container_width=True):
+                    st.session_state.selected_video = v
+                    st.rerun()
 
     # ─── 선택 확인 ───
     if st.session_state.selected_video:
         st.markdown(
             f"""
             <div class="success-box">
-                <b>✅ 선택한 영상:</b> {st.session_state.selected_video['title']}
+                <b>✅ 선택:</b> {st.session_state.selected_video['title']}
             </div>
             """,
             unsafe_allow_html=True
         )
         col1, col2 = st.columns(2)
-        if col2.button("다음 단계로 →", type="primary", use_container_width=True):
+        if col2.button("다음 →", type="primary", use_container_width=True):
             next_step()
-        if col1.button("🔄 다시 선택", use_container_width=True):
+        if col1.button("🔄 다시", use_container_width=True):
             st.session_state.selected_video = None
             st.rerun()
 
@@ -361,7 +403,7 @@ def step_2():
     
     st.markdown(
         f"""
-        <div class="info-box" style="font-size:14px;">
+        <div class="info-box">
             <b>📽️ 선택한 영상:</b> {st.session_state.selected_video['title']}
         </div>
         """,
@@ -384,9 +426,9 @@ def step_2():
     st.markdown("<br>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
-    if col1.button("← 이전 단계", use_container_width=True):
+    if col1.button("← 이전", use_container_width=True):
         prev_step()
-    if col2.button("✨ 콘텐츠 생성하기", type="primary", use_container_width=True):
+    if col2.button("✨ 생성", type="primary", use_container_width=True):
         with st.spinner("콘텐츠 생성 중..."):
             transcript = get_video_transcript(st.session_state.selected_video["link"])
             st.session_state.generated_content = regenerate_content(
@@ -409,8 +451,8 @@ def step_3():
     st.markdown(
         """
         <div class="success-box">
-            <h3 style="margin-top:0;font-size:18px;">✅ 콘텐츠가 성공적으로 생성되었습니다!</h3>
-            <p style="margin-bottom:0;font-size:14px;">아래 생성된 콘텐츠를 확인하고 복사하여 사용하세요.</p>
+            <h3 style="margin-top:0;font-size:16px;">✅ 콘텐츠가 생성되었습니다</h3>
+            <p style="margin-bottom:0;font-size:13px;">아래 콘텐츠를 확인하고 복사하여 사용하세요.</p>
         </div>
         """, 
         unsafe_allow_html=True
@@ -427,15 +469,15 @@ def step_3():
         "글자수": st.session_state.word_count,
     }
     
-    # 2열로 변경하여 좁은 화면에서 더 보기 좋게 표시
-    cols = st.columns(2)
+    # 4열로 더 컴팩트하게 배치
+    cols = st.columns([1, 1, 1, 1])
     for i, (k, v) in enumerate(summary_data.items()):
-        with cols[i % 2]:
+        with cols[i % 4]:
             st.markdown(
                 f"""
-                <div style="background:#f8f9fa;padding:10px;border-radius:8px;margin-bottom:8px;border-left:3px solid #4c6ef5;">
-                    <div style="color:#666;font-size:13px">{k}</div>
-                    <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{v}</div>
+                <div class="summary-card">
+                    <div style="color:#666;font-size:12px">{k}</div>
+                    <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{v}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -443,7 +485,7 @@ def step_3():
 
     # 콘텐츠 영역
     st.markdown("<div class='subheader'>생성된 콘텐츠</div>", unsafe_allow_html=True)
-    st.text_area("생성된 콘텐츠", st.session_state.generated_content, height=300, label_visibility="hidden")
+    st.text_area("생성된 콘텐츠", st.session_state.generated_content, height=200, label_visibility="hidden")
 
     # 복사 버튼
     copy_button(st.session_state.generated_content)
@@ -451,9 +493,9 @@ def step_3():
     st.markdown("<br>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
-    if col1.button("← 옵션 다시 설정하기", use_container_width=True):
+    if col1.button("← 옵션 수정", use_container_width=True):
         prev_step()
-    if col2.button("🔄 처음부터 다시하기", use_container_width=True):
+    if col2.button("🔄 처음으로", use_container_width=True):
         st.session_state.step = 1
         st.session_state.selected_video = None
         st.session_state.generated_content = ""
