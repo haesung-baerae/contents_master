@@ -11,8 +11,7 @@ st.set_page_config(
     layout="centered",  # centered 레이아웃 유지
     initial_sidebar_state="collapsed",
 )
-import streamlit as st
-st.write("▶️ Streamlit 버전:", st.__version__)
+
 
 # --------------------------------------------------------------------
 # 향상된 전역 CSS 스타일 - 더 컴팩트하게 조정
