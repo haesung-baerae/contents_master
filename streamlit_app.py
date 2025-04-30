@@ -128,7 +128,7 @@ def selectable(label, state_key, options):
         with col:
             if st.button(opt, key=f"{state_key}_{opt}", type="primary" if st.session_state[state_key] == opt else "secondary", use_container_width=True):
                 st.session_state[state_key] = opt
-                st.experimental_rerun()
+                st.rerun()
 
 # --------------------------------------------------------------------
 # STEP 2 ─ 콘텐츠 만들기 (옵션 설정)
