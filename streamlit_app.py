@@ -3,21 +3,18 @@ import time
 import json
 import streamlit.components.v1 as components
 
-"""
-Streamlit 앱: 콘텐츠 마스터
-- ✅ 선택 버튼은 `st.button(type="primary")` 로 하이라이트 처리
-- ✅ 클립보드 복사는 `components.html()` 로 안전하게 구현 (Streamlit 스크립트 필터 우회)
-- ※ 테스트용 더미 함수·데이터는 원형 유지
-"""
-
-# -------------------- 페이지 설정 --------------------
+# --------------------------------------------------------------------
+# 스트림릿 페이지 설정 ― 반드시 **최초** 명령으로 실행되어야 합니다!
+# --------------------------------------------------------------------
 st.set_page_config(
     page_title="콘텐츠 마스터",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-# -------------------- 전역 CSS --------------------
+# --------------------------------------------------------------------
+# 전역 CSS (심플 버전)  
+# --------------------------------------------------------------------
 st.markdown(
     """
     <style>
@@ -29,7 +26,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# -------------------- 모의 함수 (그대로 유지) --------------------
+# --------------------------------------------------------------------
+# 테스트용 모의 함수 (원형 유지)
+# --------------------------------------------------------------------
 
 def get_youtube_recommendations(keyword):
     mock = [
@@ -50,7 +49,10 @@ def regenerate_content(transcript, audience, tone, goal, words):
         "원본 스크립트를 기반으로 한 새 콘텐츠 예시입니다."
     )
 
-# -------------------- 세션 상태 기본값 --------------------
+# --------------------------------------------------------------------
+# 세션 상태 기본값
+# --------------------------------------------------------------------
+
 defaults = {
     "step": 1,
     "recommended_videos": [],
@@ -64,7 +66,9 @@ defaults = {
 for k, v in defaults.items():
     st.session_state.setdefault(k, v)
 
-# -------------------- 헬퍼 --------------------
+# --------------------------------------------------------------------
+# 헬퍼 함수
+# --------------------------------------------------------------------
 
 def next_step():
     st.session_state.step += 1
@@ -74,20 +78,23 @@ def prev_step():
     st.session_state.step -= 1
     st.rerun()
 
-# -------------------- STEP 1 --------------------
+# --------------------------------------------------------------------
+# STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
+# --------------------------------------------------------------------
 
 def step_1():
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
 
-    # --- 주제 입력 ---
+    # ─── 주제 입력 ───
     st.markdown("<div class='subheader'>주제 입력</div>", unsafe_allow_html=True)
-    keyword = st.text_input("주제 키워드", key="keyword_input", label_visibility="hidden")
+    keyword = st.text_input("주제 키워드", key="keyword_input", label_visibility="collapsed")
+
     if st.button("콘텐츠 검색", use_container_width=True):
         if keyword:
             st.session_state.recommended_videos = get_youtube_recommendations(keyword)
             st.rerun()
 
-    # --- 추천 목록 ---
+    # ─── 추천 목록 ───
     if st.session_state.recommended_videos:
         st.markdown("<div class='subheader'>인기 콘텐츠 TOP3</div>", unsafe_allow_html=True)
         for i, v in enumerate(st.session_state.recommended_videos):
@@ -101,7 +108,7 @@ def step_1():
                 st.session_state.selected_video = v
                 st.rerun()
 
-    # --- 선택 확인 ---
+    # ─── 선택 확인 ───
     if st.session_state.selected_video:
         st.success(f"선택된 영상: {st.session_state.selected_video['title']}")
         if st.button("다음", type="primary"):
@@ -110,31 +117,28 @@ def step_1():
             st.session_state.selected_video = None
             st.rerun()
 
-# -------------------- STEP 2 --------------------
+# --------------------------------------------------------------------
+# 공용 선택 버튼 컴포넌트 (톤/목표/글자수)
+# --------------------------------------------------------------------
 
 def selectable(label, state_key, options):
-    """Utility: 3‑way button selector -> returns selected option"""
     st.markdown(f"<div class='subheader'>{label}</div>", unsafe_allow_html=True)
     cols = st.columns(len(options))
     for col, opt in zip(cols, options):
         with col:
-            if st.button(
-                opt,
-                key=f"{state_key}_{opt}",
-                type="primary" if st.session_state[state_key] == opt else "secondary",
-                use_container_width=True,
-            ):
+            if st.button(opt, key=f"{state_key}_{opt}", type="primary" if st.session_state[state_key] == opt else "secondary", use_container_width=True):
                 st.session_state[state_key] = opt
                 st.experimental_rerun()
 
+# --------------------------------------------------------------------
+# STEP 2 ─ 콘텐츠 만들기 (옵션 설정)
+# --------------------------------------------------------------------
 
 def step_2():
     st.markdown("<div class='header'>콘텐츠 만들기</div>", unsafe_allow_html=True)
     st.info(f"선택된 영상: {st.session_state.selected_video['title']}")
 
-    st.session_state.target_audience = st.text_input(
-        "타겟층 입력", value=st.session_state.target_audience, label_visibility="hidden"
-    )
+    st.session_state.target_audience = st.text_input("타겟층 입력", value=st.session_state.target_audience, label_visibility="collapsed")
 
     selectable("톤/스타일", "tone_style", ["인풋말씀", "정중함", "감성"])
     selectable("목표", "goal", ["정보전달", "설득력", "구매유도"])
@@ -154,16 +158,15 @@ def step_2():
         )
         next_step()
 
-# -------------------- STEP 3 --------------------
+# --------------------------------------------------------------------
+# STEP 3 ─ 결과 & 복사 버튼
+# --------------------------------------------------------------------
 
 def copy_button(text: str):
-    """Return an HTML+JS snippet that copies text to clipboard"""
     js_literal = json.dumps(text)
     html = f"""
         <button onclick='navigator.clipboard.writeText({js_literal});alert("클립보드에 복사되었습니다!");' 
-                style='width:100%;padding:0.6rem;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;'>
-            복사하기
-        </button>
+                style='width:100%;padding:0.6rem;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;'>복사하기</button>
     """
     components.html(html, height=60)
 
@@ -180,16 +183,16 @@ def step_3():
         "글자수": st.session_state.word_count,
     })
 
-    st.text_area(
-        "생성된 콘텐츠", st.session_state.generated_content, height=300, label_visibility="hidden"
-    )
+    st.text_area("생성된 콘텐츠", st.session_state.generated_content, height=300, label_visibility="hidden")
 
     copy_button(st.session_state.generated_content)
 
     if st.button("다시 설정하기"):
         prev_step()
 
-# -------------------- Main Router --------------------
+# --------------------------------------------------------------------
+# 메인 라우터
+# --------------------------------------------------------------------
 
 if st.session_state.step == 1:
     step_1()
