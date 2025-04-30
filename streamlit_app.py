@@ -4,6 +4,7 @@ from PIL import Image
 import base64
 import time
 import re
+import json
 
 # 페이지 설정
 st.set_page_config(
@@ -74,23 +75,54 @@ st.markdown("""
         color: #000000;
         border: 1px solid #ddd;
     }
+    /* 선택 버튼 스타일 - 선택된 항목 강조 */
+    .selected-button {
+        background-color: #4CAF50 !important;
+        color: white !important;
+        border: 1px solid #45a049 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# 클립보드에 복사하는 자바스크립트 함수
-def get_clipboard_js(text):
-    return f"""
+# 클립보드에 복사하는 자바스크립트 함수 - 개선된 버전
+def get_clipboard_js():
+    return """
     <script>
-    function copyToClipboard() {{
-        const text = `{text}`;
-        navigator.clipboard.writeText(text)
-            .then(() => {{
-                console.log('텍스트가 클립보드에 복사되었습니다.');
-            }})
-            .catch(err => {{
-                console.error('클립보드 복사 실패:', err);
-            }});
-    }}
+    function copyToClipboard() {
+        const textArea = document.querySelector('.stTextArea textarea');
+        if (textArea) {
+            const textToCopy = textArea.value;
+            
+            // 현대 브라우저용 클립보드 API 사용
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    // 복사 성공 시 표시할 알림
+                    const notification = document.createElement('div');
+                    notification.textContent = '클립보드에 복사되었습니다!';
+                    notification.style.position = 'fixed';
+                    notification.style.bottom = '20px';
+                    notification.style.left = '50%';
+                    notification.style.transform = 'translateX(-50%)';
+                    notification.style.backgroundColor = '#4CAF50';
+                    notification.style.color = 'white';
+                    notification.style.padding = '10px 20px';
+                    notification.style.borderRadius = '5px';
+                    notification.style.zIndex = '1000';
+                    document.body.appendChild(notification);
+                    
+                    // 3초 후 알림 제거
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 3000);
+                })
+                .catch(err => {
+                    console.error('클립보드 복사 실패:', err);
+                    alert('클립보드 복사에 실패했습니다.');
+                });
+        } else {
+            console.error('복사할 텍스트 영역을 찾을 수 없습니다.');
+        }
+    }
     </script>
     """
 
@@ -273,6 +305,8 @@ def show_step_2():
             # 타겟층
             st.markdown("<div class='subheader' style='margin-top: 20px;'>타겟층</div>", unsafe_allow_html=True)
             target_audience = st.text_input("", key="target_audience_input", value=st.session_state.target_audience, label_visibility="collapsed")
+    
+    # 타겟층 업데이트
     st.session_state.target_audience = target_audience
     
     # 톤/스타일
@@ -280,84 +314,67 @@ def show_step_2():
     col_btn1, col_btn2, col_btn3 = st.columns(3)
     
     with col_btn1:
-        informal = st.button("인풋말씀", key="informal", 
-                            use_container_width=True,
-                            type="primary" if st.session_state.tone_style == "인풋말씀" else "secondary")
-        if informal:
+        # 선택 상태에 따라 primary/secondary 대신 직접 class 추가
+        button_class = "primary" if st.session_state.tone_style == "인풋말씀" else "secondary"
+        if st.button("인풋말씀", key="informal", use_container_width=True, type=button_class):
             st.session_state.tone_style = "인풋말씀"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
             
     with col_btn2:
-        formal = st.button("정중함", key="formal", 
-                          use_container_width=True,
-                          type="primary" if st.session_state.tone_style == "정중함" else "secondary")
-        if formal:
+        button_class = "primary" if st.session_state.tone_style == "정중함" else "secondary"
+        if st.button("정중함", key="formal", use_container_width=True, type=button_class):
             st.session_state.tone_style = "정중함"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
             
     with col_btn3:
-        friendly = st.button("감성", key="friendly", 
-                            use_container_width=True,
-                            type="primary" if st.session_state.tone_style == "감성" else "secondary")
-        if friendly:
+        button_class = "primary" if st.session_state.tone_style == "감성" else "secondary"
+        if st.button("감성", key="friendly", use_container_width=True, type=button_class):
             st.session_state.tone_style = "감성"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
     
     # 목표
     st.markdown("<div class='subheader'>목표</div>", unsafe_allow_html=True)
     col_goal1, col_goal2, col_goal3 = st.columns(3)
     
     with col_goal1:
-        inform = st.button("정보전달", key="inform", 
-                          use_container_width=True,
-                          type="primary" if st.session_state.goal == "정보전달" else "secondary")
-        if inform:
+        button_class = "primary" if st.session_state.goal == "정보전달" else "secondary"
+        if st.button("정보전달", key="inform", use_container_width=True, type=button_class):
             st.session_state.goal = "정보전달"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
             
     with col_goal2:
-        persuade = st.button("설득력", key="persuade", 
-                            use_container_width=True,
-                            type="primary" if st.session_state.goal == "설득력" else "secondary")
-        if persuade:
+        button_class = "primary" if st.session_state.goal == "설득력" else "secondary"
+        if st.button("설득력", key="persuade", use_container_width=True, type=button_class):
             st.session_state.goal = "설득력"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
             
     with col_goal3:
-        educate = st.button("구매유도", key="educate", 
-                            use_container_width=True,
-                            type="primary" if st.session_state.goal == "구매유도" else "secondary")
-        if educate:
+        button_class = "primary" if st.session_state.goal == "구매유도" else "secondary"
+        if st.button("구매유도", key="educate", use_container_width=True, type=button_class):
             st.session_state.goal = "구매유도"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
     
     # 글자수
     st.markdown("<div class='subheader'>글자수</div>", unsafe_allow_html=True)
     col_count1, col_count2, col_count3 = st.columns(3)
     
     with col_count1:
-        count_500 = st.button("500자내외", key="count_500", 
-                             use_container_width=True,
-                             type="primary" if st.session_state.word_count == "500자내외" else "secondary")
-        if count_500:
+        button_class = "primary" if st.session_state.word_count == "500자내외" else "secondary"
+        if st.button("500자내외", key="count_500", use_container_width=True, type=button_class):
             st.session_state.word_count = "500자내외"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
             
     with col_count2:
-        count_1000 = st.button("1000자내외", key="count_1000", 
-                              use_container_width=True,
-                              type="primary" if st.session_state.word_count == "1000자내외" else "secondary")
-        if count_1000:
+        button_class = "primary" if st.session_state.word_count == "1000자내외" else "secondary"
+        if st.button("1000자내외", key="count_1000", use_container_width=True, type=button_class):
             st.session_state.word_count = "1000자내외"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
             
     with col_count3:
-        count_1500 = st.button("1500자내외", key="count_1500", 
-                              use_container_width=True,
-                              type="primary" if st.session_state.word_count == "1500자내외" else "secondary")
-        if count_1500:
+        button_class = "primary" if st.session_state.word_count == "1500자내외" else "secondary"
+        if st.button("1500자내외", key="count_1500", use_container_width=True, type=button_class):
             st.session_state.word_count = "1500자내외"
-            st.rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()
     
     # 네비게이션 버튼
     back_col, generate_col = st.columns(2)
@@ -402,9 +419,8 @@ def show_step_3():
             st.markdown("<h4 style='text-align: center; margin: 20px 0;'>생성된 콘텐츠</h4>", unsafe_allow_html=True)
             content_area = st.text_area("", value=st.session_state.generated_content, height=300, label_visibility="collapsed")
             
-            # 자바스크립트로 클립보드 복사 기능 추가
-            copy_js = get_clipboard_js(st.session_state.generated_content.replace('"', '\\"').replace('\n', '\\n'))
-            st.markdown(copy_js, unsafe_allow_html=True)
+            # 개선된 클립보드 복사 스크립트 추가
+            st.markdown(get_clipboard_js(), unsafe_allow_html=True)
             
             # 버튼 - 중앙 정렬 및 여백 추가
             st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
@@ -417,15 +433,13 @@ def show_step_3():
             with copy_col:
                 # 자바스크립트 함수를 호출하는 버튼
                 st.markdown(
-                    f"""<button
+                    """<button
                         style="width: 100%; padding: 0.5rem; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;"
                         onclick="copyToClipboard()">
                         복사하기
                     </button>""",
                     unsafe_allow_html=True
                 )
-                # 복사 성공 메시지를 표시하기 위한 빈 공간
-                st.empty()
 
 # 현재 단계에 따라 올바른 화면 표시
 if st.session_state.step == 1:
