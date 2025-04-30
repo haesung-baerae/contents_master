@@ -4,7 +4,6 @@ from PIL import Image
 import base64
 import time
 import re
-import pyperclip  # 클립보드 복사 기능을 위한 라이브러리 추가
 
 # 페이지 설정
 st.set_page_config(
