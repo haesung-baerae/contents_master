@@ -8,7 +8,7 @@ import streamlit.components.v1 as components
 # --------------------------------------------------------------------
 st.set_page_config(
     page_title="콘텐츠 마스터",
-    layout="wide",
+    layout="centered",  # wide에서 centered로 변경
     initial_sidebar_state="collapsed",
 )
 
@@ -21,6 +21,13 @@ st.markdown(
         /* 전체 페이지 스타일 */
         .stApp {
             background-color: #f8f9fa;
+        }
+        
+        /* 컨테이너 너비 조정 */
+        .block-container {
+            max-width: 800px;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
         }
         
         /* 헤더 스타일 */
@@ -265,17 +272,16 @@ def step_1():
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
     render_step_indicator(st.session_state.step)
     
-    col1, col2 = st.columns([3, 1])
+    # ─── 주제 입력 ─── 
+    st.markdown("<div class='subheader'>주제 키워드 입력</div>", unsafe_allow_html=True)
     
+    col1, col2 = st.columns([3, 1])
     with col1:
-        # ─── 주제 입력 ─── 
-        st.markdown("<div class='subheader'>주제 키워드 입력</div>", unsafe_allow_html=True)
         keyword = st.text_input("주제 키워드", key="keyword_input", label_visibility="collapsed", 
                               placeholder="분석하고 싶은 주제나 키워드를 입력하세요...")
     
     with col2:
-        st.markdown("<div style='height: 56px'></div>", unsafe_allow_html=True)  # 간격 맞추기
-        if st.button("🔍 콘텐츠 검색", use_container_width=True, type="primary"):
+        if st.button("🔍 검색", use_container_width=True, type="primary"):
             if keyword:
                 with st.spinner("관련 콘텐츠 검색중..."):
                     st.session_state.recommended_videos = get_youtube_recommendations(keyword)
@@ -291,10 +297,13 @@ def step_1():
             st.markdown(
                 f"""
                 <div class='content-card'>
-                    <div style='display:flex;justify-content:space-between;align-items:center'>
+                    <div style='display:flex;align-items:center'>
+                        <div style='background:#4c6ef5;color:white;width:28px;height:28px;border-radius:50%;
+                                    display:flex;align-items:center;justify-content:center;margin-right:12px;
+                                    font-weight:bold;'>{i+1}</div>
                         <div>
-                            <h3 style='margin:0;font-size:18px;color:#333'>{i+1}. {v['title']}</h3>
-                            <a href='{v['link']}' target='_blank' style='color:#4c6ef5;text-decoration:none;'>
+                            <h3 style='margin:0;font-size:16px;color:#333'>{v['title']}</h3>
+                            <a href='{v['link']}' target='_blank' style='color:#4c6ef5;text-decoration:none;font-size:14px;'>
                                 🎬 영상 보기
                             </a>
                         </div>
@@ -312,7 +321,7 @@ def step_1():
         st.markdown(
             f"""
             <div class="success-box">
-                <b>✅ 선택된 영상:</b> {st.session_state.selected_video['title']}
+                <b>✅ 선택한 영상:</b> {st.session_state.selected_video['title']}
             </div>
             """,
             unsafe_allow_html=True
@@ -330,15 +339,17 @@ def step_1():
 
 def selectable(label, state_key, options):
     st.markdown(f"<div class='subheader'>{label}</div>", unsafe_allow_html=True)
-    cols = st.columns(len(options))
-    for col, opt in zip(cols, options):
-        with col:
-            button_type = "option-button-active" if st.session_state[state_key] == opt else "option-button"
-            if st.button(opt, key=f"{state_key}_{opt}", 
-                        use_container_width=True, 
-                        type="secondary" if button_type == "option-button" else "primary"):
-                st.session_state[state_key] = opt
-                st.rerun()
+    # 컨테이너 추가하여 옵션 버튼들 모아주기
+    with st.container():
+        cols = st.columns(len(options))
+        for col, opt in zip(cols, options):
+            with col:
+                button_type = "option-button-active" if st.session_state[state_key] == opt else "option-button"
+                if st.button(opt, key=f"{state_key}_{opt}", 
+                            use_container_width=True, 
+                            type="secondary" if button_type == "option-button" else "primary"):
+                    st.session_state[state_key] = opt
+                    st.rerun()
 
 # --------------------------------------------------------------------
 # STEP 2 ─ 콘텐츠 만들기 (옵션 설정)
@@ -350,20 +361,22 @@ def step_2():
     
     st.markdown(
         f"""
-        <div class="info-box">
-            <b>📽️ 선택된 영상:</b> {st.session_state.selected_video['title']}
+        <div class="info-box" style="font-size:14px;">
+            <b>📽️ 선택한 영상:</b> {st.session_state.selected_video['title']}
         </div>
         """,
         unsafe_allow_html=True
     )
     
-    st.markdown("<div class='subheader'>타겟층 설정</div>", unsafe_allow_html=True)
-    st.session_state.target_audience = st.text_input("타겟층 입력", 
+    # 옵션 영역을 컨테이너로 감싸기
+    with st.container():
+        st.markdown("<div class='subheader'>타겟층 설정</div>", unsafe_allow_html=True)
+        st.session_state.target_audience = st.text_input("타겟층 입력", 
                                               value=st.session_state.target_audience, 
                                               placeholder="예: 20-30대 직장인, 대학생, 학부모 등...",
                                               label_visibility="collapsed")
-
-    with st.container():
+    
+        # 나머지 옵션들
         selectable("톤/스타일 선택", "tone_style", ["일반", "정중함", "감성"])
         selectable("콘텐츠 목표", "goal", ["정보전달", "설득력", "구매유도"])
         selectable("글자수 설정", "word_count", ["500자내외", "1000자내외", "1500자내외"])
@@ -396,8 +409,8 @@ def step_3():
     st.markdown(
         """
         <div class="success-box">
-            <h3 style="margin-top:0">✅ 콘텐츠가 성공적으로 생성되었습니다!</h3>
-            아래 생성된 콘텐츠를 확인하고 복사하여 사용하세요.
+            <h3 style="margin-top:0;font-size:18px;">✅ 콘텐츠가 성공적으로 생성되었습니다!</h3>
+            <p style="margin-bottom:0;font-size:14px;">아래 생성된 콘텐츠를 확인하고 복사하여 사용하세요.</p>
         </div>
         """, 
         unsafe_allow_html=True
@@ -414,14 +427,15 @@ def step_3():
         "글자수": st.session_state.word_count,
     }
     
-    cols = st.columns(3)
+    # 2열로 변경하여 좁은 화면에서 더 보기 좋게 표시
+    cols = st.columns(2)
     for i, (k, v) in enumerate(summary_data.items()):
-        with cols[i % 3]:
+        with cols[i % 2]:
             st.markdown(
                 f"""
-                <div style="background:#f8f9fa;padding:12px;border-radius:8px;margin-bottom:10px;">
-                    <div style="color:#666;font-size:14px">{k}</div>
-                    <div style="font-weight:600;font-size:16px">{v}</div>
+                <div style="background:#f8f9fa;padding:10px;border-radius:8px;margin-bottom:8px;border-left:3px solid #4c6ef5;">
+                    <div style="color:#666;font-size:13px">{k}</div>
+                    <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{v}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
