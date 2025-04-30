@@ -34,19 +34,28 @@ st.markdown("""
         background-color: #f0f0f0;
     }
     .header {
+        width: 100%;
         font-size: 28px;
         font-weight: bold;
         text-align: center;
-        margin-bottom: 20px;
+        margin: 0 auto 20px auto;
         padding: 10px 0;
         background-color: #111;
         color: white;
         border-radius: 5px;
+        white-space: nowrap;
     }
     .subheader {
         font-size: 18px;
         font-weight: bold;
         margin-bottom: 10px;
+        text-align: center;
+    }
+    .subject-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -85,9 +94,16 @@ if st.session_state.step == 1:
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
     st.markdown("<div class='subheader'>주제 입력</div>", unsafe_allow_html=True)
 
-    keyword = st.text_input("키워드 입력", value="", placeholder="예: AI 마케팅", key="keyword_input")
-    if st.button("콘텐츠 검색", use_container_width=True) and keyword:
-        st.session_state.recommended_videos = get_youtube_recommendations(keyword)
+    with st.container():
+        st.markdown("<div class='subject-container'>", unsafe_allow_html=True)
+        keyword = st.text_input("키워드 입력", value="", placeholder="예: AI 마케팅", key="keyword_input")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    if st.button("콘텐츠 검색", use_container_width=True, key="search_btn") and keyword:
+        try:
+            st.session_state.recommended_videos = get_youtube_recommendations(keyword)
+        except Exception as e:
+            st.error(f"추천 영상 불러오기 실패: {e}")
         st.experimental_rerun()
 
     if st.session_state.recommended_videos:
@@ -106,11 +122,11 @@ if st.session_state.step == 1:
     if st.session_state.selected_video:
         st.success(f"선택된 콘텐츠: {st.session_state.selected_video['title']}")
         col_yes, col_no = st.columns(2)
-        if col_yes.button("진행하기"):  # YES
+        if col_yes.button("진행하기", key="yes_btn"):  # YES
             st.session_state.step = 2
             st.session_state.video_transcript = get_video_transcript(st.session_state.selected_video['link'])
             st.experimental_rerun()
-        if col_no.button("다시 선택" ):
+        if col_no.button("다시 선택", key="no_btn"):  # NO
             st.session_state.selected_video = None
             st.session_state.recommended_videos = []
             st.experimental_rerun()
@@ -121,35 +137,32 @@ elif st.session_state.step == 2:
     st.write(f"[영상 링크]({st.session_state.selected_video['link']})")
 
     st.markdown("<div class='subheader'>트랜스크립트</div>", unsafe_allow_html=True)
-    st.text_area("", st.session_state.video_transcript, height=150)
+    st.text_area("", st.session_state.video_transcript, height=150, key="transcript_area")
 
-    st.markdown("<div class='subheader'>타겟층</div>", unsafe_allow_html=True)
-    st.session_state.target_audience = st.text_input("", value=st.session_state.target_audience, placeholder="예: 직장인 30대", key="target_audience_input")
+    st.markdown("<div class='subheader'>파라미터 설정</div>", unsafe_allow_html=True)
+    st.session_state.target_audience = st.text_input("타겟층", value=st.session_state.target_audience, placeholder="예: 직장인 30대", key="audience_input")
+    st.session_state.tone_style = st.radio("톤/스타일", ["일반", "정중함", "감성"], index=["일반", "정중함", "감성"].index(st.session_state.tone_style), horizontal=True)
+    st.session_state.goal = st.radio("목표", ["정보전달", "설득력", "구매유도"], index=["정보전달", "설득력", "구매유도"].index(st.session_state.goal), horizontal=True)
+    st.session_state.word_count = st.radio("글자수", ["500자내외", "1000자내외", "1500자내외"], index=["500자내외", "1000자내외", "1500자내외"].index(st.session_state.word_count), horizontal=True)
 
-    st.markdown("<div class='subheader'>톤/스타일</div>", unsafe_allow_html=True)
-    st.session_state.tone_style = st.radio("", ["일반", "정중함", "감성"], index=["일반", "정중함", "감성"].index(st.session_state.tone_style), horizontal=True)
-
-    st.markdown("<div class='subheader'>목표</div>", unsafe_allow_html=True)
-    st.session_state.goal = st.radio("", ["정보전달", "설득력", "구매유도"], index=["정보전달", "설득력", "구매유도"].index(st.session_state.goal), horizontal=True)
-
-    st.markdown("<div class='subheader'>글자수</div>", unsafe_allow_html=True)
-    st.session_state.word_count = st.radio("", ["500자내외", "1000자내외", "1500자내외"], index=["500자내외", "1000자내외", "1500자내외"].index(st.session_state.word_count), horizontal=True)
-
-    if st.button("콘텐츠 생성", use_container_width=True):
-        st.session_state.generated_content = regenerate_content(
-            st.session_state.video_transcript,
-            st.session_state.target_audience,
-            st.session_state.tone_style,
-            st.session_state.goal,
-            st.session_state.word_count
-        )
-        st.session_state.step = 3
+    if st.button("콘텐츠 생성", use_container_width=True, key="gen_btn"):
+        try:
+            st.session_state.generated_content = regenerate_content(
+                st.session_state.video_transcript,
+                st.session_state.target_audience,
+                st.session_state.tone_style,
+                st.session_state.goal,
+                st.session_state.word_count
+            )
+            st.session_state.step = 3
+        except Exception as e:
+            st.error(f"콘텐츠 생성 실패: {e}")
         st.experimental_rerun()
 
 elif st.session_state.step == 3:
     st.markdown("<div class='header'>생성된 콘텐츠</div>", unsafe_allow_html=True)
     st.markdown(st.session_state.generated_content)
-    if st.button("처음으로 돌아가기", use_container_width=True):
+    if st.button("처음으로 돌아가기", use_container_width=True, key="reset_btn"):
         for var in ['step','recommended_videos','selected_video','video_transcript','generated_content']:
-            del st.session_state[var]
+            st.session_state.pop(var, None)
         st.experimental_rerun()
