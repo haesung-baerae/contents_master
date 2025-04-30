@@ -47,12 +47,16 @@ st.markdown("""
         font-weight: bold;
         text-align: center;
         margin-bottom: 20px;
-        padding-top: 15px;  /* 패딩 증가 */
-        padding-bottom: 15px;  /* 패딩 증가 */
+        padding-top: 25px;  /* 패딩 더 증가 */
+        padding-bottom: 25px;  /* 패딩 더 증가 */
         background-color: #111;
         color: white;
         border-radius: 5px;
-        line-height: 1.5;  /* 줄 간격 추가 */
+        line-height: 2.0;  /* 줄 간격 추가 */
+        min-height: 80px;  /* 최소 높이 설정 */
+        display: flex;
+        align-items: center;
+        justify-content: center; /* 중앙 정렬 */
     }
     .subheader {
         font-size: 18px;
@@ -163,12 +167,12 @@ if 'word_count' not in st.session_state:
 # 다음 단계로 이동하는 함수
 def go_to_next_step():
     st.session_state.step += 1
-    st.experimental_rerun()  # 상태 변경 후 즉시 페이지 리로드
+    st.rerun()  # 최신 Streamlit 버전에서는 st.rerun() 사용
 
 # 이전 단계로 이동하는 함수
 def go_to_previous_step():
     st.session_state.step -= 1
-    st.experimental_rerun()  # 상태 변경 후 즉시 페이지 리로드
+    st.rerun()  # 최신 Streamlit 버전에서는 st.rerun() 사용
 
 # 스텝 1: 콘텐츠 마스터 (키워드 입력 및 영상 선택)
 def show_step_1():
@@ -192,7 +196,7 @@ def show_step_1():
     # 검색 버튼 클릭 시 추천 영상 로드
     if search_button and keyword:
         st.session_state.recommended_videos = get_youtube_recommendations(keyword)
-        st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+        st.rerun()  # 상태 변경 후 페이지 리로드
     
     # 인기 콘텐츠 TOP3 표시
     if st.session_state.recommended_videos:
@@ -220,7 +224,7 @@ def show_step_1():
                     
                     if st.button(f"선택", key=f"select_btn_{i}", use_container_width=True):
                         st.session_state.selected_video = video
-                        st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+                        st.rerun()  # 상태 변경 후 페이지 리로드
     
     # 선택한 비디오 확인
     if st.session_state.selected_video:
@@ -250,7 +254,7 @@ def show_step_1():
                 with no_col:
                     if st.button("다시 선택", use_container_width=True):
                         st.session_state.selected_video = None
-                        st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+                        st.rerun()  # 상태 변경 후 페이지 리로드
 
 # 스텝 2: 콘텐츠 만들기 (스타일, 타겟층 등 설정)
 def show_step_2():
@@ -281,7 +285,7 @@ def show_step_2():
                             type="primary" if st.session_state.tone_style == "인풋말씀" else "secondary")
         if informal:
             st.session_state.tone_style = "인풋말씀"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
             
     with col_btn2:
         formal = st.button("정중함", key="formal", 
@@ -289,7 +293,7 @@ def show_step_2():
                           type="primary" if st.session_state.tone_style == "정중함" else "secondary")
         if formal:
             st.session_state.tone_style = "정중함"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
             
     with col_btn3:
         friendly = st.button("감성", key="friendly", 
@@ -297,7 +301,7 @@ def show_step_2():
                             type="primary" if st.session_state.tone_style == "감성" else "secondary")
         if friendly:
             st.session_state.tone_style = "감성"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
     
     # 목표
     st.markdown("<div class='subheader'>목표</div>", unsafe_allow_html=True)
@@ -309,7 +313,7 @@ def show_step_2():
                           type="primary" if st.session_state.goal == "정보전달" else "secondary")
         if inform:
             st.session_state.goal = "정보전달"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
             
     with col_goal2:
         persuade = st.button("설득력", key="persuade", 
@@ -317,7 +321,7 @@ def show_step_2():
                             type="primary" if st.session_state.goal == "설득력" else "secondary")
         if persuade:
             st.session_state.goal = "설득력"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
             
     with col_goal3:
         educate = st.button("구매유도", key="educate", 
@@ -325,7 +329,7 @@ def show_step_2():
                             type="primary" if st.session_state.goal == "구매유도" else "secondary")
         if educate:
             st.session_state.goal = "구매유도"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
     
     # 글자수
     st.markdown("<div class='subheader'>글자수</div>", unsafe_allow_html=True)
@@ -337,7 +341,7 @@ def show_step_2():
                              type="primary" if st.session_state.word_count == "500자내외" else "secondary")
         if count_500:
             st.session_state.word_count = "500자내외"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
             
     with col_count2:
         count_1000 = st.button("1000자내외", key="count_1000", 
@@ -345,7 +349,7 @@ def show_step_2():
                               type="primary" if st.session_state.word_count == "1000자내외" else "secondary")
         if count_1000:
             st.session_state.word_count = "1000자내외"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
             
     with col_count3:
         count_1500 = st.button("1500자내외", key="count_1500", 
@@ -353,7 +357,7 @@ def show_step_2():
                               type="primary" if st.session_state.word_count == "1500자내외" else "secondary")
         if count_1500:
             st.session_state.word_count = "1500자내외"
-            st.experimental_rerun()  # 상태 변경 후 페이지 리로드
+            st.rerun()  # 상태 변경 후 페이지 리로드
     
     # 네비게이션 버튼
     back_col, generate_col = st.columns(2)
