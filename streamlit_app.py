@@ -601,7 +601,9 @@ def step_3():
                 f"""
                 <div class="summary-card">
                     <div class="summary-label">{k}</div>
-                    <div class="summary-value">{v}</div>
+                    <div class="summary-value" style="white-space: normal; overflow: visible; text-overflow: clip;">
+                        {v}
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True
