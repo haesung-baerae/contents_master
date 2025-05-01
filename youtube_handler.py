@@ -9,6 +9,7 @@ import gspread
 from tqdm import tqdm
 import re
 import math
+from pathlib import Path
 
 # ---------- 0. 환경 로드 ----------
 YOUTUBE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -54,11 +55,18 @@ def _snippet_text(snippet) -> str:
 
 # ---------- 자막(txt) 저장 ----------
 def save_transcript(video_id: str, title: str, pref_lang: str, dirname="transcripts") -> str | None:
+def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | None = None) -> str | None:
     """
     • 자막이 있으면 .txt 저장 후 경로 반환
     • 없으면 None 반환
     """
-    import os, re, unicodedata
+    # ───────── 저장 폴더 결정 ─────────
+    base_dir = Path.home() / "Downloads"        # C:\Users\<id>\Downloads  (Win)
+                                               # /Users/<id>/Downloads    (mac)
+    save_dir = base_dir / (dirname or "transcripts")
+    save_dir.mkdir(parents=True, exist_ok=True)
+    
+    import unicodedata
     os.makedirs(dirname, exist_ok=True)
 
     def safe_name(name):
@@ -81,7 +89,7 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname="transcri
 
     # 저장
     filename = f"{safe_name(title)}.txt"
-    path = os.path.join(dirname, filename)
+    path = os.path.join(save_dir, filename)
     # transcript는 list[dict]  (0.6.x)  또는  FetchedTranscript (iterable, 1.x)
     text_lines = (_snippet_text(s) for s in transcript)
     with open(path, "w", encoding="utf-8") as f:
