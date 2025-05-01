@@ -23,6 +23,11 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+        /* 컬럼이나 마크다운 블록 사이 기본 간격을 줄입니다 */
+        [data-testid="stVerticalBlock"] > div {
+          margin-bottom: 4px !important;
+          padding-bottom: 0 !important;
+        }
         /* 전체 페이지 스타일 */
         .stApp {
             background-color: #f8f9fa;
@@ -457,9 +462,7 @@ def step_1():
                     st.session_state.selected_video = v
                     st.rerun()
         
-        # 비디오 사이에 약간의 간격 추가
-        st.markdown("<div style='height:5px'></div>", unsafe_allow_html=True)
-
+        
     # ─── 선택 확인 ───
     if st.session_state.selected_video:
         st.markdown(
