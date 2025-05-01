@@ -13,7 +13,7 @@ from pathlib import Path
 
 # ---------- 0. 환경 로드 ----------
 YOUTUBE_API_KEY = os.getenv("GOOGLE_API_KEY")
-YOUTUBE_SCRIPT = None
+
 # ---------- 1. YouTube 검색 ----------
 
 YOUTUBE = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)  
@@ -103,8 +103,10 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | No
     path = os.path.join(save_dir, filename)
     with open(path, "w", encoding="utf-8") as f:
         f.write(transcript_text)
-    YOUTUBE_SCRIPT = transcript_text
-    return path
+   
+    #return path   
+    return transcript_text
+
 
 # 로컬 환경인지 확인하는 함수
 def is_local_environment():
