@@ -502,7 +502,7 @@ def step_2():
             if st.session_state.transcript_text:
                 sum_script = sc.summarize(st.session_state.transcript_text, 3, st.session_state.tone_style)
                 
-                st.session_state.generated_content = yt.expand_summary_to_blog(
+                st.session_state.generated_content = sc.expand_summary_to_blog(
                     sum_script,
                     st.session_state.target_audience,
                     st.session_state.tone_style,
