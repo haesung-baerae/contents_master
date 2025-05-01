@@ -196,7 +196,7 @@ st.markdown(
             padding: 10px;
             border: 1px solid #eee;
             border-radius: 5px;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .summary-label {
             color: #666;
