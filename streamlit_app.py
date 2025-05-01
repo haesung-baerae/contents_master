@@ -310,7 +310,10 @@ def copy_button(text: str):
 # STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
 # --------------------------------------------------------------------
 t_path = None
-sel_script = "안녕하세요, 테스트 중입니다"
+# 최상위 레벨에서 세션 상태 초기화 (앱이 처음 실행될 때만 실행됨)
+if 'transcript_text' not in st.session_state:
+    st.session_state.transcript_text = ""
+    
 def step_1():
     global sel_script
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
@@ -424,13 +427,17 @@ def step_1():
         )
         col1, col2 = st.columns(2)
         if col2.button("다음 →", type="primary", use_container_width=True):            
-            sel_script = yt.save_transcript(v['id'], v['title'], lang)
-            #t_path = yt.save_transcript(v['id'], v['title'], lang)
-            # if t_path:
-            #     st.success(f"저장 완료 ✔\n→ {t_path}")
-            #     # 여기서 t_path에 있는 파일을 프로그램 내부에서 활용
-            # else:
-            #     st.error("저장 실패 또는 자막 없음 😥")
+            transcript_text = yt.save_transcript(v['id'], v['title'], lang)
+            
+            if transcript_text:
+                st.session_state.transcript_text = transcript_text
+                st.success(f"자막 텍스트를 성공적으로 가져왔습니다.")
+                 # 디버깅용 (선택사항)
+                with st.expander("자막 미리보기"):
+                    st.text_area("내용", transcript_text[:500] + "..." if len(transcript_text) > 500 else transcript_text, height=150)
+            else :
+                st.error("자막을 가져올 수 없습니다.")
+
             next_step()
         if col1.button("🔄 다시", use_container_width=True):
             st.session_state.selected_video = None
@@ -493,8 +500,14 @@ def step_2():
         with st.spinner("콘텐츠 생성 중..."):
             #transcript = get_video_transcript(st.session_state.selected_video["link"])
             #transcript = sc.summarize(t_path, 3, st.session_state.tone_style)
-            sum_script = sc.summarize(sel_script, 3, st.session_state.tone_style)
-            st.session_state.generated_content = sum_script
+                # 세션 상태에서 텍스트 직접 사용
+            if st.session_state.transcript_text:
+                sum_script = sc.summarize(st.session_state.transcript_text, 3, st.session_state.tone_style)
+                st.session_state.generated_content = sum_script
+            else:
+                st.error("요약할 자막 텍스트가 없습니다.")
+                st.session_state.generated_content = "요약 실패: 자막을 찾을 수 없음"
+        
             # st.session_state.generated_content = regenerate_content(
             #     transcript,
             #     st.session_state.target_audience,
