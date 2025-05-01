@@ -60,29 +60,30 @@ def summarize(
     """
     #text = read_script(file_path)
     text = sel_script
-    system_msg = dedent(
-        f"""
-        You are an expert content summarizer.
-        Always base your summary *only* on the given transcript; do not add facts.
-        """
-    )
-    user_msg = dedent(
-        f"""
-        아래 스크립트를 {tone} 톤으로, {sentences}문장 분량으로 요약해 주세요.
-        ---
-        {text}
-        """
-    )
+    return text
+    # system_msg = dedent(
+    #     f"""
+    #     You are an expert content summarizer.
+    #     Always base your summary *only* on the given transcript; do not add facts.
+    #     """
+    # )
+    # user_msg = dedent(
+    #     f"""
+    #     아래 스크립트를 {tone} 톤으로, {sentences}문장 분량으로 요약해 주세요.
+    #     ---
+    #     {text}
+    #     """
+    # )
 
-    resp = client.chat.completions.create(
-        model=model,
-        temperature=temperature,
-        messages=[
-            {"role": "system", "content": system_msg},
-            {"role": "user", "content": user_msg},
-        ],
-    )
-    return resp.choices[0].message.content.strip()
+    # resp = client.chat.completions.create(
+    #     model=model,
+    #     temperature=temperature,
+    #     messages=[
+    #         {"role": "system", "content": system_msg},
+    #         {"role": "user", "content": user_msg},
+    #     ],
+    # )
+    # return resp.choices[0].message.content.strip()
 
 def expand_summary_to_blog(summary_text: str, tone="friendly", target_chars=1300):
     prompt = f"""
