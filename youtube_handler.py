@@ -9,8 +9,6 @@ import gspread
 from tqdm import tqdm
 import re
 
-
-g_api_key = "AIzaSyB5bi4yxU0O-MimvQ0YF5bBNkkGJxUq-hU"
 # ---------- 0. 환경 로드 ----------
 
 # ---------- 1. YouTube 검색 ----------
