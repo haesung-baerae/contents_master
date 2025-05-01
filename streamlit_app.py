@@ -490,7 +490,9 @@ def step_2():
         selectable("톤/스타일 선택", "tone_style", ["일반", "정중함", "감성"])
         selectable("콘텐츠 목표", "goal", ["정보전달", "설득력", "구매유도"])
         selectable("글자수 설정", "word_count", ["500자내외", "1000자내외", "1500자내외"])
-
+        options = {"500자내외":500, "1000자내외":1000, "1500자내외":1500}
+        st.session_state.word_count = options[st.session_state.word_count]
+        
     st.markdown("<br>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -507,7 +509,7 @@ def step_2():
                     st.session_state.target_audience,
                     st.session_state.tone_style,
                     st.session_state.goal,
-                    int(st.session_state.word_count))
+                    st.session_state.word_count)
             else:
                 st.error("요약할 자막 텍스트가 없습니다.")
                 st.session_state.generated_content = "요약 실패: 자막을 찾을 수 없음"
