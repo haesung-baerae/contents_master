@@ -422,7 +422,7 @@ def step_1():
         )
         col1, col2 = st.columns(2)
         if col2.button("다음 →", type="primary", use_container_width=True):            
-            t_path = save_transcript(v['id'], v['title'], lang)
+            t_path = yt.save_transcript(v['id'], v['title'], lang)
             if t_path:
                 st.success(f"저장 완료 ✔\n→ {t_path}")
             else:
