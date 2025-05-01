@@ -458,7 +458,7 @@ def step_1():
                     st.rerun()
         
         # 비디오 사이에 약간의 간격 추가
-        st.markdown("<div style='height:5px'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height:3px'></div>", unsafe_allow_html=True)
 
     # ─── 선택 확인 ───
     if st.session_state.selected_video:
@@ -599,8 +599,7 @@ def step_3():
     """, unsafe_allow_html=True)
     
     # 1. 첫째 줄: 영상 제목 (풀폭)
-    title = st.session_state.get("selected_video", {}).get("title", "제목 없음")
-    st.markdown("### 선택 옵션 요약")
+    title = st.session_state.get("selected_video", {}).get("title", "제목 없음")    
     st.markdown(f"""
     <div class="summary-card" style="width:100%;">
       <div class="summary-label">영상 제목</div>
