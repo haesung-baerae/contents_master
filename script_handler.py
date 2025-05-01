@@ -6,7 +6,7 @@ from textwrap import dedent
 from openai import OpenAI
 
 # 0) 환경 변수(.env) 로드
-client = 
+client = = os.getenv("OPENAI_API_KEY")
 
 # 1) 스크립트 파일 읽기
 def read_script(path: str) -> str:
