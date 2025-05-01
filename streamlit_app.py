@@ -350,7 +350,8 @@ def step_1():
                             <div class='number-indicator'
                                  style='background:#4c6ef5;color:white;width:24px;height:24px;border-radius:50%;
                                         display:flex;align-items:center;justify-content:center;margin-right:8px;
-                                        font-weight:bold;'>{i+1}</div>
+                                        font-weight:bold;'>{i+1}
+                            </div>
                             <div>
                                 <h3 style='margin:0;font-size:14px;color:#333'>{v['title']}</h3>
                                 <a href='{v['url']}' target='_blank'
