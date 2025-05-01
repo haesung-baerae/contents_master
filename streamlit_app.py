@@ -312,6 +312,7 @@ def copy_button(text: str):
 t_path = None
 sel_script = "안녕하세요, 테스트 중입니다"
 def step_1():
+    global sel_script
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
     render_step_indicator(st.session_state.step)
     start = "2024-12-01"
