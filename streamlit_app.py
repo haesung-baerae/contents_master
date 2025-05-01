@@ -188,12 +188,21 @@ st.markdown(
         
         /* 요약 카드 스타일 - 더 컴팩트하게 */
         .summary-card {
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            border-left: 3px solid #4c6ef5;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .summary-label {
+            color: #666;
+            font-size: 12px;
+        }
+        .summary-value {
+            font-weight: 600;
             font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         /* 복사 버튼 컨테이너 높이 조정 */
@@ -575,6 +584,7 @@ def step_3():
     # 선택 옵션 요약 - 카드 형태로
     st.markdown("<div class='subheader'>선택 옵션 요약</div>", unsafe_allow_html=True)
     
+    # 데이터 표시 부분
     summary_data = {
         "영상 제목": st.session_state.selected_video["title"],
         "타겟층": st.session_state.target_audience or "지정되지 않음",
@@ -583,15 +593,15 @@ def step_3():
         "글자수": st.session_state.word_count_text,
     }
     
-    # 4열로 더 컴팩트하게 배치
+    # 4열로 배치
     cols = st.columns([1, 1, 1, 1])
     for i, (k, v) in enumerate(summary_data.items()):
         with cols[i % 4]:
             st.markdown(
                 f"""
                 <div class="summary-card">
-                    <div style="color:#666;font-size:12px">{k}</div>
-                    <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{v}</div>
+                    <div class="summary-label">{k}</div>
+                    <div class="summary-value">{v}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
