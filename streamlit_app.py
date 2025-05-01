@@ -351,7 +351,7 @@ def step_1():
                                         font-weight:bold;'>{i+1}</div>
                             <div>
                                 <h3 style='margin:0;font-size:14px;color:#333'>{v['title']}</h3>
-                                <a href='{v['link']}' target='_blank' style='color:#4c6ef5;text-decoration:none;font-size:12px;'>
+                                <a href='{v['url']}' target='_blank' style='color:#4c6ef5;text-decoration:none;font-size:12px;'>
                                     🎬 영상 보기
                                 </a>
                             </div>
