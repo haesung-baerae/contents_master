@@ -594,16 +594,18 @@ def step_3():
     }
     
     # 4열로 배치
-    # 각 변수의 값 확인
-    st.write("디버그 정보:")
-    st.write(summary_data)
-    
-    # 간단한 출력으로 테스트
     cols = st.columns([1, 1, 1, 1])
     for i, (k, v) in enumerate(summary_data.items()):
         with cols[i % 4]:
-            st.write(k)
-            st.write(v)
+            st.markdown(
+                f"""
+                <div style="padding:10px;border:1px solid #eee;border-radius:5px;">
+                    <div style="color:#666;font-size:12px">{k}</div>
+                    <div style="font-weight:bold">{v}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     # 콘텐츠 영역
     st.markdown("<div class='subheader'>생성된 콘텐츠</div>", unsafe_allow_html=True)
