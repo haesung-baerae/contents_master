@@ -73,7 +73,8 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | No
                 transcript_list.find_generated_transcript(['en', 'ko']).fetch()
             )
         except Exception:
-            return None  # 완전히 실패 → 상위 로직에서 None 체크
+            return "save_transcript 실패"
+            #return None  # 완전히 실패 → 상위 로직에서 None 체크
     
     # transcript는 list[dict] (0.6.x) 또는 FetchedTranscript (iterable, 1.x)
     text_lines = [_snippet_text(s) for s in transcript]
