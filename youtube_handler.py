@@ -54,47 +54,65 @@ def _snippet_text(snippet) -> str:
     return getattr(snippet, "text", "")
 
 # ---------- 자막(txt) 저장 ----------
-#def save_transcript(video_id: str, title: str, pref_lang: str, dirname="transcripts") -> str | None:
 def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | None = None) -> str | None:
     """
     • 자막이 있으면 .txt 저장 후 경로 반환
     • 없으면 None 반환
     """
-    # ───────── 저장 폴더 결정 ─────────
-    base_dir = Path.home() / "Downloads"        # C:\Users\<id>\Downloads  (Win)
-                                               # /Users/<id>/Downloads    (mac)
-    save_dir = base_dir / (dirname or "transcripts")
-    save_dir.mkdir(parents=True, exist_ok=True)
-    
     import unicodedata
-    #os.makedirs(dirname, exist_ok=True)
-
+    import tempfile
+    
     def safe_name(name):
         name = unicodedata.normalize("NFC", name)
         name = re.sub(r"[\\/*?:\"<>|]", "", name)  # Windows 금지문자 제거
         return name.strip()[:80]
-
+    
     try:
         # ① 우선 사용자가 지정한 언어로 시도
         transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=[pref_lang])
     except (TranscriptsDisabled, NoTranscriptFound, CouldNotRetrieveTranscript):
         try:
-            # ② 실패하면 “자동 생성(en)” → “자동 생성(ko)” 순으로 fallback
+            # ② 실패하면 "자동 생성(en)" → "자동 생성(ko)" 순으로 fallback
             transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
             transcript = (
                 transcript_list.find_generated_transcript(['en', 'ko']).fetch()
             )
         except Exception:
             return None  # 완전히 실패 → 상위 로직에서 None 체크
-
-    # 저장
+    
+    # transcript는 list[dict] (0.6.x) 또는 FetchedTranscript (iterable, 1.x)
+    text_lines = [_snippet_text(s) for s in transcript]
+    transcript_text = "\n".join(text_lines)
     filename = f"{safe_name(title)}.txt"
+    
+    # 로컬 환경인지 스트림릿 환경인지 확인하여 저장 디렉토리 결정
+    if is_local_environment():  # 이 함수는 아래에 정의
+        # 로컬 환경일 때는 원래 경로에 저장
+        base_dir = Path.home() / "Downloads"  # C:\Users\<id>\Downloads (Win) 또는 /Users/<id>/Downloads (mac)
+        save_dir = base_dir / (dirname or "transcripts")
+        save_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        # 스트림릿 환경일 때는 임시 디렉토리에 저장
+        if dirname:
+            save_dir = Path(tempfile.gettempdir()) / dirname
+            save_dir.mkdir(parents=True, exist_ok=True)
+        else:
+            save_dir = Path(tempfile.gettempdir())
+    
     path = os.path.join(save_dir, filename)
-    # transcript는 list[dict]  (0.6.x)  또는  FetchedTranscript (iterable, 1.x)
-    text_lines = (_snippet_text(s) for s in transcript)
     with open(path, "w", encoding="utf-8") as f:
-        f.write("\n".join(text_lines))
+        f.write(transcript_text)
+    
     return path
+
+# 로컬 환경인지 확인하는 함수
+def is_local_environment():
+    try:
+        # 스트림릿 클라우드는 특정 환경 변수가 설정되어 있음
+        return not (os.environ.get('STREAMLIT_SHARING') == 'true' or 
+                   'STREAMLIT_SERVER_URL' in os.environ)
+    except:
+        return True  # 환경 변수 확인 실패 시 안전하게 로컬로 간주
     
 # ---------- 메인 파이프라인 ----------
 def top3_videos(
