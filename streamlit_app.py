@@ -3,7 +3,7 @@ import time
 import json
 import streamlit.components.v1 as components
 import youtube_handler as yt
-import script_handler as st
+import script_handler as sc
 import textwrap   # ← 4칸 들여쓰기 제거용
 
 
