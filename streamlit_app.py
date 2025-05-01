@@ -23,11 +23,7 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-        /* 컬럼이나 마크다운 블록 사이 기본 간격을 줄입니다 */
-        [data-testid="stVerticalBlock"] > div {
-          margin-bottom: 4px !important;
-          padding-bottom: 0 !important;
-        }
+        
         /* 마크다운으로 렌더링된 p 태그 여백 없애기 */
         div[data-testid="stMarkdownContainer"] > p {
           margin: 0 !important;
@@ -224,7 +220,14 @@ st.markdown(
         
         /* 복사 버튼 컨테이너 높이 조정 */
         .copy-button-container {
-            height: 45px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: auto !important;
+        }
+        .copy-button-container > button {
+            margin: 0 !important;
+            padding: 4px 8px !important;   /* 버튼 내부 패딩만 남겨두고 */
+            display: block !important;     /* block으로 전환 */
         }
         
         /* 경고 메시지 스타일 */
@@ -350,7 +353,7 @@ def copy_button(text):
             ">
       복사하기
     </button>
-    
+        
     <script>
     function copyToClipboard() {{
         try {{
@@ -376,7 +379,7 @@ def copy_button(text):
     }}
     </script>
     """    
-    st.components.v1.html(copy_html, height=50)
+    st.components.v1.html(copy_html, height=36, scrolling=False)
 # --------------------------------------------------------------------
 # STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
 # --------------------------------------------------------------------
