@@ -1,3 +1,4 @@
+import streamlit as st
 import os
 import argparse
 from pathlib import Path
@@ -40,7 +41,7 @@ def read_script(file_path: str) -> str | None:
         return content
         
     except Exception as e:
-        st.error(f"파일을 읽는 중 오류가 발생했습니다: {str(e)}")
+        st.error(f"파일을 읽는 중 오류가 발생했습니다: {file_path} {str(e)}")
         return None
 
 # 2) 단일 프롬프트 요약 (긴 파일이면 chunking 전략 추가 가능)
