@@ -60,13 +60,7 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | No
     • 자막이 있으면 .txt 저장 후 경로 반환
     • 없으면 None 반환
     """
-    import unicodedata
-    import tempfile
-    
-    def safe_name(name):
-        name = unicodedata.normalize("NFC", name)
-        name = re.sub(r"[\\/*?:\"<>|]", "", name)  # Windows 금지문자 제거
-        return name.strip()[:80]
+
     
     try:
         # ① 우선 사용자가 지정한 언어로 시도
@@ -79,12 +73,20 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | No
                 transcript_list.find_generated_transcript(['en', 'ko']).fetch()
             )
         except Exception:
-            return video_id
-            #return None  # 완전히 실패 → 상위 로직에서 None 체크
+            return None  # 완전히 실패 → 상위 로직에서 None 체크
     
     # transcript는 list[dict] (0.6.x) 또는 FetchedTranscript (iterable, 1.x)
     text_lines = [_snippet_text(s) for s in transcript]
     transcript_text = "\n".join(text_lines)
+
+    # import unicodedata
+    # import tempfile
+    
+    # def safe_name(name):
+    #     name = unicodedata.normalize("NFC", name)
+    #     name = re.sub(r"[\\/*?:\"<>|]", "", name)  # Windows 금지문자 제거
+    #     return name.strip()[:80]
+    
     # filename = f"{safe_name(title)}.txt"
     
     # # 로컬 환경인지 스트림릿 환경인지 확인하여 저장 디렉토리 결정
