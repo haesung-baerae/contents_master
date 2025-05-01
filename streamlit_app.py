@@ -421,7 +421,12 @@ def step_1():
             unsafe_allow_html=True
         )
         col1, col2 = st.columns(2)
-        if col2.button("다음 →", type="primary", use_container_width=True):
+        if col2.button("다음 →", type="primary", use_container_width=True):            
+            t_path = save_transcript(v['id'], v['title'], lang)
+            if t_path:
+                st.success(f"저장 완료 ✔\n→ {t_path}")
+            else:
+                st.error("저장 실패 또는 자막 없음 😥")
             next_step()
         if col1.button("🔄 다시", use_container_width=True):
             st.session_state.selected_video = None
