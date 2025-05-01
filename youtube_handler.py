@@ -142,7 +142,8 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | No
 def top3_videos(keyword: str,
 		start_date: str,  # "YYYY-MM-DD"
 		end_date: str,    # "YYYY-MM-DD"
-		lang: str = "ko"  # "ko" | "en"):
+		lang: str = "ko"  # "ko" | "en"
+	       ):
     # 1) 검색: 최대 50개 영상 ID 수집 (관련도 순)
     search_resp = YOUTUBE.search().list(
         part="id,snippet",
@@ -166,7 +167,7 @@ def top3_videos(keyword: str,
     # 3) 영상 필터링 및 점수 계산
     videos = []
     for v in vids_resp.get("items", []):
-        snippet = v.get("snippet", {})
+	snippet = v.get("snippet", {})
 	cd = v["contentDetails"]
 	# 언어 필터링 완화: 언어 정보가 없거나 일치하지 않아도 포함
         audio_lang = snippet.get("defaultAudioLanguage", "")
