@@ -58,36 +58,33 @@ def summarize(
     sentences : 몇 문장으로 요약할지(또는 'paragraphs', 'words' 등으로 바꿔도 됨)
     tone      : 'friendly', 'professional', '유머러스한', '논문 스타일' 등 자유 입력
     """
-    #text = read_script(file_path)
-    text = sel_script
-    return text
-    # system_msg = dedent(
-    #     f"""
-    #     You are an expert content summarizer.
-    #     Always base your summary *only* on the given transcript; do not add facts.
-    #     """
-    # )
-    # user_msg = dedent(
-    #     f"""
-    #     아래 스크립트를 {tone} 톤으로, {sentences}문장 분량으로 요약해 주세요.
-    #     ---
-    #     {text}
-    #     """
-    # )
+    system_msg = dedent(
+        f"""
+        You are an expert content summarizer.
+        Always base your summary *only* on the given transcript; do not add facts.
+        """
+    )
+    user_msg = dedent(
+        f"""
+        아래 스크립트를 {tone} 톤으로, {sentences}문장 분량으로 요약해 주세요.
+        ---
+        {sel_script}
+        """
+    )
 
-    # resp = client.chat.completions.create(
-    #     model=model,
-    #     temperature=temperature,
-    #     messages=[
-    #         {"role": "system", "content": system_msg},
-    #         {"role": "user", "content": user_msg},
-    #     ],
-    # )
-    # return resp.choices[0].message.content.strip()
+    resp = client.chat.completions.create(
+        model=model,
+        temperature=temperature,
+        messages=[
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": user_msg},
+        ],
+    )
+    return resp.choices[0].message.content.strip()
 
-def expand_summary_to_blog(summary_text: str, tone="friendly", target_chars=1300):
+def expand_summary_to_blog(summary_text: str, target_audience = 'all', tone_style="friendly", goal = 'normal', target_chars=500):
     prompt = f"""
-    아래 요약문을 바탕으로 {tone} 톤의 블로그 글을 작성하세요.
+    아래 요약문을 바탕으로 {tone_style} 톤의 블로그 글을 작성하세요.
     • 글 전체 분량은 최소 {target_chars}자, 최대 {target_chars + 200}자 사이로 맞춰주세요.
     • 소제목 3~5개를 넣고, 각 소제목마다 200자 이상 작성해주세요.
     • 구체적인 예시나 비유를 하나씩 포함하고, 마지막에는 독자에게 던질 질문이나 제안을 넣어 글을 마무리해주세요.
