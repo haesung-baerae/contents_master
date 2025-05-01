@@ -139,11 +139,12 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | No
     
     
 # ---------- 메인 파이프라인 ----------
-def top3_videos(keyword: str,
-		start_date: str,  # "YYYY-MM-DD"
-		end_date: str,    # "YYYY-MM-DD"
-		lang: str = "ko"  # "ko" | "en"
-	       ):
+def top3_videos(
+    keyword: str,
+    start_date: str,  # "YYYY-MM-DD"
+    end_date: str,    # "YYYY-MM-DD"
+    lang: str = "ko"  # "ko" | "en"
+):
     # 1) 검색: 최대 50개 영상 ID 수집 (관련도 순)
     search_resp = YOUTUBE.search().list(
         part="id,snippet",
@@ -159,31 +160,35 @@ def top3_videos(keyword: str,
     video_items = search_resp.get("items", [])
     if not video_items:
         raise ValueError("조건에 맞는 영상이 없습니다.")
-
+    
     # 2) 상세 정보 조회
     video_ids = [item["id"]["videoId"] for item in video_items]
-    vids_resp = YOUTUBE.videos().list(part="snippet,statistics,contentDetails",id=','.join(video_ids)).execute()
-
+    vids_resp = YOUTUBE.videos().list(
+        part="snippet,statistics,contentDetails",
+        id=','.join(video_ids)
+    ).execute()
+    
     # 3) 영상 필터링 및 점수 계산
     videos = []
     for v in vids_resp.get("items", []):
-	snippet = v.get("snippet", {})
-	cd = v["contentDetails"]
-	# 언어 필터링 완화: 언어 정보가 없거나 일치하지 않아도 포함
+        snippet = v.get("snippet", {})
+        cd = v["contentDetails"]
+        
+        # 언어 필터링 완화: 언어 정보가 없거나 일치하지 않아도 포함
         audio_lang = snippet.get("defaultAudioLanguage", "")
         if lang not in audio_lang and audio_lang:  # 언어 정보가 없으면 포함
             continue
-
+            
         # 영상 길이 필터링 완화 (30초 이상)
         duration = iso_duration_to_sec(cd["duration"])
         if duration < 30:  # 30초 이상으로 완화
             continue
-
+            
         stats = v.get("statistics", {})
         views = int(stats.get("viewCount", 0))
         likes = int(stats.get("likeCount", 0))
         upload_date = datetime.strptime(snippet.get("publishedAt", "")[:10], "%Y-%m-%d")
-
+        
         # 점수 계산
         video_data = {
             "title": snippet.get("title", ""),
@@ -207,15 +212,15 @@ def top3_videos(keyword: str,
             "duration_sec": duration,
             "score": score,
         })
-
+        
     if len(videos) < 3:
         print(f"조건에 맞는 영상이 {len(videos)}개로 3개 미만입니다.")
         return videos  # 3개 미만이어도 반환
-
+        
     # 4) 점수 기준 상위 3개 선정
     videos.sort(key=lambda x: x["score"], reverse=True)
     top3 = videos[:3]
-
+    
     return top3
 
 # ---------- 사용 예시 ----------
