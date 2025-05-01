@@ -47,7 +47,7 @@ def read_script(file_path: str) -> str | None:
 
 # 2) 단일 프롬프트 요약 (긴 파일이면 chunking 전략 추가 가능)
 def summarize(
-    file_path: str, 
+    sel_script: str, 
     sentences: int = 3,
     tone: str = "formal",
     model: str = "gpt-4o-mini",
@@ -58,7 +58,8 @@ def summarize(
     sentences : 몇 문장으로 요약할지(또는 'paragraphs', 'words' 등으로 바꿔도 됨)
     tone      : 'friendly', 'professional', '유머러스한', '논문 스타일' 등 자유 입력
     """
-    text = read_script(file_path)
+    #text = read_script(file_path)
+    text = sel_script
     system_msg = dedent(
         f"""
         You are an expert content summarizer.
