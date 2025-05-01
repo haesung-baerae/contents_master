@@ -488,7 +488,8 @@ def step_2():
         prev_step()
     if col2.button("✨ 생성", type="primary", use_container_width=True):
         with st.spinner("콘텐츠 생성 중..."):
-            transcript = get_video_transcript(st.session_state.selected_video["link"])
+            #transcript = get_video_transcript(st.session_state.selected_video["link"])
+            transcript = sc.summarize()
             st.session_state.generated_content = regenerate_content(
                 transcript,
                 st.session_state.target_audience,
