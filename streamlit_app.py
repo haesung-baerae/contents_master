@@ -338,44 +338,76 @@ def step_1():
     if st.session_state.recommended_videos:
         st.markdown("<div class='subheader'>추천 인기 콘텐츠 TOP3</div>", unsafe_allow_html=True)
         
-        # 각 카드와 버튼을 한 줄에 배치하기 위한 컨테이너
-        for i, v in enumerate(st.session_state.recommended_videos):
-            dur_min = v['duration_sec'] // 60
-
-        # ① 행 단위 컨테이너를 먼저 만들기
+    # 추천 영상 정보를 표시하는 코드
+    for i, v in enumerate(st.session_state.recommended_videos):
+        dur_min = v['duration_sec'] // 60
+        
+        # 각 비디오마다 새로운 컨테이너 생성
         with st.container():
-            col1, col2 = st.columns([3, 1])
-    
+            col1, col2 = st.columns([4, 1])  # 비율을 4:1로 조정하여 카드에 더 많은 공간 할당
+            
             # ───────── 카드(왼쪽) ─────────
             with col1:
                 html = textwrap.dedent(f"""
-                <div class='content-card'>
-                  <div style='display:flex;align-items:center'>
+                <div class='content-card' style='padding:10px;border:1px solid #e6e6e6;border-radius:5px;margin-bottom:10px;background-color:#f9f9f9;'>
+                  <div style='display:flex;align-items:flex-start'>
                     <div class='number-indicator'
-                         style='background:#4c6ef5;color:white;width:24px;height:24px;border-radius:50%;
-                                display:flex;align-items:center;justify-content:center;margin-right:8px;font-weight:bold;'>
+                         style='background:#4c6ef5;color:white;width:28px;height:28px;border-radius:50%;
+                                display:flex;align-items:center;justify-content:center;margin-right:12px;font-weight:bold;flex-shrink:0;'>
                          {i+1}
                     </div>
-                    <div>
-                      <h3 style='margin:0;font-size:14px;color:#333'>{v['title']}</h3>
-                      <a href='{v['url']}' target='_blank'
-                         style='color:#4c6ef5;text-decoration:none;font-size:12px;'>🎬 영상 보기</a>
-                      <p style='margin:2px 0 0;font-size:11px;color:#555'>
-                        조회수&nbsp;{v['views']:,}&nbsp;·&nbsp;
-                        업로드&nbsp;{v['upload_date']}&nbsp;·&nbsp;
-                        길이&nbsp;{dur_min}분&nbsp;{v['duration_sec']%60}초
+                    <div style='flex-grow:1;overflow:hidden;'>
+                      <h3 style='margin:0 0 5px 0;font-size:16px;color:#333;font-weight:600;'>{v['title']}</h3>
+                      <div style='display:flex;align-items:center;margin-bottom:5px;'>
+                        <a href='{v['url']}' target='_blank'
+                           style='color:#4c6ef5;text-decoration:none;font-size:13px;display:inline-flex;align-items:center;'>
+                           <span style='margin-right:4px;'>🎬</span>영상 보기
+                        </a>
+                      </div>
+                      <p style='margin:0;font-size:12px;color:#555;'>
+                        <span style='margin-right:8px;'>👁️ 조회수 {v['views']:,}</span>
+                        <span style='margin-right:8px;'>📅 업로드 {v['upload_date']}</span>
+                        <span>⏱️ 길이 {dur_min}분 {v['duration_sec']%60}초</span>
                       </p>
                     </div>
                   </div>
                 </div>
                 """)
                 st.markdown(html, unsafe_allow_html=True)
-    
+            
             # ───────── 선택 버튼(오른쪽) ─────────
             with col2:
-                if st.button("선택", key=f"sel_{i}", use_container_width=True):
+                button_html = f"""
+                <style>
+                .custom-button-{i} {{
+                    background-color: #4c6ef5;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 10px 0;
+                    width: 100%;
+                    font-weight: 600;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                    text-align: center;
+                    display: inline-block;
+                    margin-top: 10px;
+                }}
+                .custom-button-{i}:hover {{
+                    background-color: #364fc7;
+                }}
+                </style>
+                """
+                st.markdown(button_html, unsafe_allow_html=True)
+                
+                if st.button("선택", key=f"sel_{i}", use_container_width=True, 
+                            help=f"이 영상을 선택합니다: {v['title']}"):
                     st.session_state.selected_video = v
                     st.rerun()
+        
+        # 비디오 사이에 약간의 간격 추가
+        st.markdown("<div style='height:5px'></div>", unsafe_allow_html=True)
 
     # ─── 선택 확인 ───
     if st.session_state.selected_video:
