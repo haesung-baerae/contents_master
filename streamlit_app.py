@@ -584,30 +584,26 @@ def step_3():
     # 선택 옵션 요약 - 카드 형태로
     st.markdown("<div class='subheader'>선택 옵션 요약</div>", unsafe_allow_html=True)
     
-    # 데이터 표시 부분
     summary_data = {
         "영상 제목": st.session_state.selected_video["title"],
-        "타겟층": st.session_state.target_audience or "지정되지 않음",
-        "톤/스타일": st.session_state.tone_style,
-        "목표": st.session_state.goal,
-        "글자수": st.session_state.word_count_text,
+        "타겟층":    st.session_state.target_audience or "지정되지 않음",
+        "톤/스타일": st.session_state.tone_style or "지정되지 않음",
+        "목표":      st.session_state.goal or "지정되지 않음",
+        # 숫자를 띄우고 싶다면 value, 레이블만 보여줄 거면 text
+        "글자수":    st.session_state.word_count_value,  
     }
     
-    # 4열로 배치
-    cols = st.columns([1, 1, 1, 1])
+    cols = st.columns(5)   # ← 5열로 변경
     for i, (k, v) in enumerate(summary_data.items()):
-        with cols[i % 4]:
-            st.markdown(
-                f"""
+        with cols[i]:
+            st.markdown(f"""
                 <div class="summary-card">
                     <div class="summary-label">{k}</div>
-                    <div class="summary-value" style="white-space: normal; overflow: visible; text-overflow: clip;">
+                    <div class="summary-value" style="white-space: normal;">
                         {v}
                     </div>
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+            """, unsafe_allow_html=True)
             
     # 콘텐츠 영역
     st.markdown("<div class='subheader'>생성된 콘텐츠</div>", unsafe_allow_html=True)
