@@ -356,11 +356,6 @@ def step_1():
                                 <a href='{v['url']}' target='_blank'
                                    style='color:#4c6ef5;text-decoration:none;font-size:12px;'>🎬 영상 보기</a>
                                            
-                                <p style='margin:2px 0 0;font-size:11px;color:#555'>
-                                조회수&nbsp;{v['views']:,} ·
-                                업로드&nbsp;{v['upload_date']} ·
-                                길이&nbsp;{dur_min}분&nbsp;{v['duration_sec']%60}초
-                                </p>
                             </div>
                         </div>
                     </div>
