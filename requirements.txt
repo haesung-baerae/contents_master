@@ -7,3 +7,4 @@ requests
 youtube-transcript-api
 gspread
 isodate
+tiktoken
