@@ -163,16 +163,13 @@ def top3_videos(
 
     # 2) 상세 정보 조회
     video_ids = [item["id"]["videoId"] for item in video_items]
-    vids_resp = YOUTUBE.videos().list(
-        part="snippet,statistics,contentDetails",
-        id=','.join(video_ids)
-    ).execute()
+    vids_resp = YOUTUBE.videos().list(part="snippet,statistics,contentDetails",id=','.join(video_ids)).execute()
 
     # 3) 영상 필터링 및 점수 계산
     videos = []
     for v in vids_resp.get("items", []):
 	snippet = v.get("snippet", {})
-        cd = v["contentDetails"]
+	cd = v["contentDetails"]
 	# 언어 필터링 완화: 언어 정보가 없거나 일치하지 않아도 포함
         audio_lang = snippet.get("defaultAudioLanguage", "")
         if lang not in audio_lang and audio_lang:  # 언어 정보가 없으면 포함
