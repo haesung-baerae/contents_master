@@ -340,43 +340,42 @@ def step_1():
         
         # 각 카드와 버튼을 한 줄에 배치하기 위한 컨테이너
         for i, v in enumerate(st.session_state.recommended_videos):
-            col1, col2 = st.columns([3, 1])
-
-            # 카드에 쓸 데이터
             dur_min = v['duration_sec'] // 60
-    
-            # ① HTML 문자열 : dedent 로 왼쪽 공백 제거
-            html = textwrap.dedent(f"""
-              <div class='content-card'>
-              <div style='display:flex;align-items:center'>
-                <div class='number-indicator'
-                     style='background:#4c6ef5;color:white;width:24px;height:24px;border-radius:50%;
-                            display:flex;align-items:center;justify-content:center;margin-right:8px;font-weight:bold;'>
-                     {i+1}
-                </div>
-                <div>
-                  <h3 style='margin:0;font-size:14px;color:#333'>{v['title']}</h3>
-                  <a href='{v['url']}' target='_blank'
-                     style='color:#4c6ef5;text-decoration:none;font-size:12px;'>🎬 영상 보기</a>
-                  <p style='margin:2px 0 0;font-size:11px;color:#555'>
-                    조회수&nbsp;{v['views']:,}&nbsp;·&nbsp;
-                    업로드&nbsp;{v['upload_date']}&nbsp;·&nbsp;
-                    길이&nbsp;{dur_min}분&nbsp;{v['duration_sec']%60}초
-                  </p>
-                </div>
-              </div>
-            </div>
-            """)
 
-        # ───────── 카드 출력 ─────────
-        with col1:
-            st.markdown(html, unsafe_allow_html=True)
+        # ① 행 단위 컨테이너를 먼저 만들기
+        with st.container():
+            col1, col2 = st.columns([3, 1])
     
-        # ───────── 선택 버튼 ─────────
-        with col2:
-            if st.button("선택", key=f"sel_{i}", use_container_width=True):
-                st.session_state.selected_video = v
-                st.rerun()
+            # ───────── 카드(왼쪽) ─────────
+            with col1:
+                html = textwrap.dedent(f"""
+                <div class='content-card'>
+                  <div style='display:flex;align-items:center'>
+                    <div class='number-indicator'
+                         style='background:#4c6ef5;color:white;width:24px;height:24px;border-radius:50%;
+                                display:flex;align-items:center;justify-content:center;margin-right:8px;font-weight:bold;'>
+                         {i+1}
+                    </div>
+                    <div>
+                      <h3 style='margin:0;font-size:14px;color:#333'>{v['title']}</h3>
+                      <a href='{v['url']}' target='_blank'
+                         style='color:#4c6ef5;text-decoration:none;font-size:12px;'>🎬 영상 보기</a>
+                      <p style='margin:2px 0 0;font-size:11px;color:#555'>
+                        조회수&nbsp;{v['views']:,}&nbsp;·&nbsp;
+                        업로드&nbsp;{v['upload_date']}&nbsp;·&nbsp;
+                        길이&nbsp;{dur_min}분&nbsp;{v['duration_sec']%60}초
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                """)
+                st.markdown(html, unsafe_allow_html=True)
+    
+            # ───────── 선택 버튼(오른쪽) ─────────
+            with col2:
+                if st.button("선택", key=f"sel_{i}", use_container_width=True):
+                    st.session_state.selected_video = v
+                    st.rerun()
 
     # ─── 선택 확인 ───
     if st.session_state.selected_video:
