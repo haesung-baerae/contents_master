@@ -597,15 +597,8 @@ def step_3():
     cols = st.columns([1, 1, 1, 1])
     for i, (k, v) in enumerate(summary_data.items()):
         with cols[i % 4]:
-            st.markdown(
-                f"""
-                <div class="summary-card">
-                    <div class="summary-label">{k}</div>
-                    <div class="summary-value">{v}</div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+            st.caption(k)
+            st.markdown(f"**{v}**")
 
     # 콘텐츠 영역
     st.markdown("<div class='subheader'>생성된 콘텐츠</div>", unsafe_allow_html=True)
