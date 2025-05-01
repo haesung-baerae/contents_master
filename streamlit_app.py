@@ -198,6 +198,7 @@ st.markdown(
             font-size: 12px;
         }
         .summary-value {
+            color: #000 !important;
             font-weight: 600;
             font-size: 13px;
             white-space: nowrap;
@@ -584,13 +585,22 @@ def step_3():
     # 선택 옵션 요약 - 카드 형태로
     st.markdown("<div class='subheader'>선택 옵션 요약</div>", unsafe_allow_html=True)
     
-    st.write("▶ current session_state:", dict(st.session_state))
+    
     # 디버깅용: 현재 스테이트 확인
-    st.write("▶ session_state keys:", list(st.session_state.keys()))
-
-    # 1. 첫째 줄: 제목만 풀폭으로
-    st.markdown("### 선택 옵션 요약")
+    #st.write("▶ current session_state:", dict(st.session_state))
+    #st.write("▶ session_state keys:", list(st.session_state.keys()))
+    
+    st.markdown("""
+    <style>
+    .summary-value {
+        color: #000 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # 1. 첫째 줄: 영상 제목 (풀폭)
     title = st.session_state.get("selected_video", {}).get("title", "제목 없음")
+    st.markdown("### 선택 옵션 요약")
     st.markdown(f"""
     <div class="summary-card" style="width:100%;">
       <div class="summary-label">영상 제목</div>
@@ -598,12 +608,11 @@ def step_3():
     </div>
     """, unsafe_allow_html=True)
     
-    # 2. 둘째 줄: 나머지 4개
+    # 2. 둘째 줄: 타겟층 / 톤·스타일 / 목표 / 글자수
     summary_data = {
         "타겟층":    st.session_state.get("target_audience", "지정되지 않음"),
-        "톤/스타일": st.session_state.get("tone_style", "지정되지 않음"),
-        "목표":      st.session_state.get("goal", "지정되지 않음"),
-        # 레이블 보여줄 거면 text, 숫자 보여줄 거면 value
+        "톤/스타일": st.session_state.get("tone_style",      "지정되지 않음"),
+        "목표":      st.session_state.get("goal",            "지정되지 않음"),
         "글자수":    st.session_state.get("word_count_text", "지정되지 않음"),
     }
     
