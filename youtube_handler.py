@@ -171,7 +171,7 @@ def top3_videos(
     # 3) 영상 필터링 및 점수 계산
     videos = []
     for v in vids_resp.get("items", []):
-		snippet = v.get("snippet", {})
+	snippet = v.get("snippet", {})
         cd = v["contentDetails"]
 		# 언어 필터링 완화: 언어 정보가 없거나 일치하지 않아도 포함
         audio_lang = snippet.get("defaultAudioLanguage", "")
