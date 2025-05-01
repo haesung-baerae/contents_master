@@ -425,6 +425,7 @@ def step_1():
             t_path = yt.save_transcript(v['id'], v['title'], lang)
             if t_path:
                 st.success(f"저장 완료 ✔\n→ {t_path}")
+                # 여기서 t_path에 있는 파일을 프로그램 내부에서 활용
             else:
                 st.error("저장 실패 또는 자막 없음 😥")
             next_step()
