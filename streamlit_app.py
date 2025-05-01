@@ -584,6 +584,7 @@ def step_3():
     # 선택 옵션 요약 - 카드 형태로
     st.markdown("<div class='subheader'>선택 옵션 요약</div>", unsafe_allow_html=True)
     
+    st.write("▶ current session_state:", dict(st.session_state))
     # 디버깅용: 현재 스테이트 확인
     st.write("▶ session_state keys:", list(st.session_state.keys()))
 
