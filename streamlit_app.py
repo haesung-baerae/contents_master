@@ -310,7 +310,7 @@ def copy_button(text: str):
 # STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
 # --------------------------------------------------------------------
 t_path = None
-sel_script = None
+sel_script = "안녕하세요, 테스트 중입니다"
 def step_1():
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
     render_step_indicator(st.session_state.step)
