@@ -8,12 +8,13 @@ from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, No
 import gspread
 from tqdm import tqdm
 import re
+import math
 
 # ---------- 0. 환경 로드 ----------
-
+YOUTUBE_API_KEY = os.getenv("GOOGLE_API_KEY")
 # ---------- 1. YouTube 검색 ----------
-import math
-  
+
+YOUTUBE = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)  
 # ---------- 스코어 계산 함수 ----------
 # 예시: (조회수 * 0.7 + 좋아요 * 50 * 0.3) 의 로그 스케일
 def calc_score(views: int, likes: int) -> float:
@@ -151,7 +152,7 @@ def top3_videos(
     return top3
 # ---------- 사용 예시 ----------
 if __name__ == "__main__":
-    YOUTUBE = build("youtube", "v3", developerKey=g_api_key)  
+    
     
     keyword = "미드저니"
     start = "2024-12-01"
