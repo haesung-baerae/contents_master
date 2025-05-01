@@ -2,6 +2,9 @@ import streamlit as st
 import time
 import json
 import streamlit.components.v1 as components
+import youtube_handler as yt
+
+
 
 # --------------------------------------------------------------------
 # 스트림릿 페이지 설정 ― 반드시 **최초** 명령으로 실행되어야 합니다!
@@ -309,7 +312,9 @@ def copy_button(text: str):
 def step_1():
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
     render_step_indicator(st.session_state.step)
-    
+    start = "2024-12-01"
+    end = "2025-04-29"
+    lang = "ko"          # "ko" 이면 한국어 자막 우선
     # ─── 주제 입력 ─── 
     st.markdown("<div class='subheader'>주제 키워드 입력</div>", unsafe_allow_html=True)
     
@@ -323,7 +328,8 @@ def step_1():
         if st.button("🔍 검색", use_container_width=True, type="primary"):
             if keyword:
                 with st.spinner("검색중..."):
-                    st.session_state.recommended_videos = get_youtube_recommendations(keyword)
+                    #st.session_state.recommended_videos = get_youtube_recommendations(keyword)
+                    st.session_state.recommended_videos = top3_videos(keyword, start, end, lang)
                 st.rerun()
             else:
                 st.warning("키워드를 입력해주세요!")
