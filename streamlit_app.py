@@ -253,7 +253,7 @@ defaults = {
     "target_audience": "",
     "tone_style": "일반",
     "goal": "정보전달",
-    "word_count": "500자내외",
+    "word_count_text": "500자내외",
 }
 for k, v in defaults.items():
     st.session_state.setdefault(k, v)
@@ -511,7 +511,7 @@ def step_2():
                     st.session_state.target_audience,
                     st.session_state.tone_style,
                     st.session_state.goal,
-                    st.session_state.word_count)
+                    st.session_state.word_count_value)
             else:
                 st.error("요약할 자막 텍스트가 없습니다.")
                 st.session_state.generated_content = "요약 실패: 자막을 찾을 수 없음"
@@ -545,7 +545,7 @@ def step_3():
         "타겟층": st.session_state.target_audience or "지정되지 않음",
         "톤/스타일": st.session_state.tone_style,
         "목표": st.session_state.goal,
-        "글자수": st.session_state.word_count,
+        "글자수": st.session_state.word_count_text,
     }
     
     # 4열로 더 컴팩트하게 배치
