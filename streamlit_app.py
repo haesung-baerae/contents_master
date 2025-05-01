@@ -489,10 +489,12 @@ def step_2():
         # 나머지 옵션들
         selectable("톤/스타일 선택", "tone_style", ["일반", "정중함", "감성"])
         selectable("콘텐츠 목표", "goal", ["정보전달", "설득력", "구매유도"])
-        selectable("글자수 설정", "word_count", ["500자내외", "1000자내외", "1500자내외"])
-        options = {"500자내외":500, "1000자내외":1000, "1500자내외":1500}
-        st.session_state.word_count = options[st.session_state.word_count]
-        
+        # 옵션 1: 다른 변수 이름 사용
+        selectable("글자수 설정", "word_count_text", ["500자내외", "1000자내외", "1500자내외"])
+        options = {"500자내외": 500, "1000자내외": 1000, "1500자내외": 1500}
+        st.session_state.word_count_value = options[st.session_state.word_count_text]
+
+       
     st.markdown("<br>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
