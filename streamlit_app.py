@@ -310,6 +310,7 @@ def copy_button(text: str):
 # STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
 # --------------------------------------------------------------------
 t_path = None
+sel_script = None
 def step_1():
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
     render_step_indicator(st.session_state.step)
@@ -422,12 +423,13 @@ def step_1():
         )
         col1, col2 = st.columns(2)
         if col2.button("다음 →", type="primary", use_container_width=True):            
-            t_path = yt.save_transcript(v['id'], v['title'], lang)
-            if t_path:
-                st.success(f"저장 완료 ✔\n→ {t_path}")
-                # 여기서 t_path에 있는 파일을 프로그램 내부에서 활용
-            else:
-                st.error("저장 실패 또는 자막 없음 😥")
+            sel_script = yt.save_transcript(v['id'], v['title'], lang)
+            #t_path = yt.save_transcript(v['id'], v['title'], lang)
+            # if t_path:
+            #     st.success(f"저장 완료 ✔\n→ {t_path}")
+            #     # 여기서 t_path에 있는 파일을 프로그램 내부에서 활용
+            # else:
+            #     st.error("저장 실패 또는 자막 없음 😥")
             next_step()
         if col1.button("🔄 다시", use_container_width=True):
             st.session_state.selected_video = None
@@ -489,8 +491,9 @@ def step_2():
     if col2.button("✨ 생성", type="primary", use_container_width=True):
         with st.spinner("콘텐츠 생성 중..."):
             #transcript = get_video_transcript(st.session_state.selected_video["link"])
-            transcript = sc.summarize(t_path, 3, st.session_state.tone_style)
-            st.session_state.generated_content = transcript
+            #transcript = sc.summarize(t_path, 3, st.session_state.tone_style)
+            sum_script = sc.summarize(sel_script, 3, st.session_state.tone_style)
+            st.session_state.generated_content = sum_script
             # st.session_state.generated_content = regenerate_content(
             #     transcript,
             #     st.session_state.target_audience,
