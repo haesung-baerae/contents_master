@@ -23,6 +23,16 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+        /* 모든 st.button 컨테이너(버튼 래퍼)의 위/아래 여백을 0~4px로 줄입니다 */
+        div.stButton {
+            margin-top: 4px !important;
+            margin-bottom: 4px !important;
+            padding: 0 !important;
+        }
+        /* 버튼 내부 패딩은 그대로 유지하면서 margin만 제어 */
+        div.stButton > button {
+            margin: 0 !important;
+        }
         
         /* 마크다운으로 렌더링된 p 태그 여백 없애기 */
         div[data-testid="stMarkdownContainer"] > p {
