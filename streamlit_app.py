@@ -507,7 +507,7 @@ def step_2():
                     st.session_state.target_audience,
                     st.session_state.tone_style,
                     st.session_state.goal,
-                    st.session_state.word_count)
+                    int(st.session_state.word_count))
             else:
                 st.error("요약할 자막 텍스트가 없습니다.")
                 st.session_state.generated_content = "요약 실패: 자막을 찾을 수 없음"
