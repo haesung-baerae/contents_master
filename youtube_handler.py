@@ -173,7 +173,7 @@ def top3_videos(
     for v in vids_resp.get("items", []):
 	snippet = v.get("snippet", {})
         cd = v["contentDetails"]
-		# 언어 필터링 완화: 언어 정보가 없거나 일치하지 않아도 포함
+	# 언어 필터링 완화: 언어 정보가 없거나 일치하지 않아도 포함
         audio_lang = snippet.get("defaultAudioLanguage", "")
         if lang not in audio_lang and audio_lang:  # 언어 정보가 없으면 포함
             continue
@@ -224,7 +224,7 @@ def top3_videos(
 
 # ---------- 사용 예시 ----------
 if __name__ == "__main__":
-    YOUTUBE = build("youtube", "v3", developerKey=g_api_key)  
+    YOUTUBE = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)  
     
     keyword = "세계여행"
     start = "2024-10-01"
