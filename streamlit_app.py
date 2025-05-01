@@ -355,8 +355,7 @@ def step_1():
                                 <h3 style='margin:0;font-size:14px;color:#333'>{v['title']}</h3>
                                 <a href='{v['url']}' target='_blank'
                                    style='color:#4c6ef5;text-decoration:none;font-size:12px;'>🎬 영상 보기</a>
-            
-                                <!-- ▼ 새 정보 라인 ▼ -->
+                                           
                                 <p style='margin:2px 0 0;font-size:11px;color:#555'>
                                     조회수&nbsp;{v['views']:,} ·
                                     업로드&nbsp;{v['upload_date']} ·
