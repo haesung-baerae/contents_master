@@ -54,7 +54,7 @@ def _snippet_text(snippet) -> str:
     return getattr(snippet, "text", "")
 
 # ---------- 자막(txt) 저장 ----------
-def save_transcript(video_id: str, title: str, pref_lang: str, dirname="transcripts") -> str | None:
+#def save_transcript(video_id: str, title: str, pref_lang: str, dirname="transcripts") -> str | None:
 def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | None = None) -> str | None:
     """
     • 자막이 있으면 .txt 저장 후 경로 반환
