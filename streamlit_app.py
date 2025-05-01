@@ -584,25 +584,36 @@ def step_3():
     # 선택 옵션 요약 - 카드 형태로
     st.markdown("<div class='subheader'>선택 옵션 요약</div>", unsafe_allow_html=True)
     
+    # 디버깅용: 현재 스테이트 확인
+    st.write("▶ session_state keys:", list(st.session_state.keys()))
+
+    # 1. 첫째 줄: 제목만 풀폭으로
+    st.markdown("### 선택 옵션 요약")
+    title = st.session_state.get("selected_video", {}).get("title", "제목 없음")
+    st.markdown(f"""
+    <div class="summary-card" style="width:100%;">
+      <div class="summary-label">영상 제목</div>
+      <div class="summary-value">{title}</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 2. 둘째 줄: 나머지 4개
     summary_data = {
-        "영상 제목": st.session_state.selected_video["title"],
-        "타겟층":    st.session_state.target_audience or "지정되지 않음",
-        "톤/스타일": st.session_state.tone_style or "지정되지 않음",
-        "목표":      st.session_state.goal or "지정되지 않음",
-        # 숫자를 띄우고 싶다면 value, 레이블만 보여줄 거면 text
-        "글자수":    st.session_state.word_count_value,  
+        "타겟층":    st.session_state.get("target_audience", "지정되지 않음"),
+        "톤/스타일": st.session_state.get("tone_style", "지정되지 않음"),
+        "목표":      st.session_state.get("goal", "지정되지 않음"),
+        # 레이블 보여줄 거면 text, 숫자 보여줄 거면 value
+        "글자수":    st.session_state.get("word_count_text", "지정되지 않음"),
     }
     
-    cols = st.columns(5)   # ← 5열로 변경
-    for i, (k, v) in enumerate(summary_data.items()):
-        with cols[i]:
+    cols = st.columns(4)
+    for idx, (label, val) in enumerate(summary_data.items()):
+        with cols[idx]:
             st.markdown(f"""
-                <div class="summary-card">
-                    <div class="summary-label">{k}</div>
-                    <div class="summary-value" style="white-space: normal;">
-                        {v}
-                    </div>
-                </div>
+            <div class="summary-card">
+              <div class="summary-label">{label}</div>
+              <div class="summary-value">{val}</div>
+            </div>
             """, unsafe_allow_html=True)
             
     # 콘텐츠 영역
