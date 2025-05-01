@@ -329,7 +329,7 @@ def step_1():
             if keyword:
                 with st.spinner("검색중..."):
                     #st.session_state.recommended_videos = get_youtube_recommendations(keyword)
-                    st.session_state.recommended_videos = top3_videos(keyword, start, end, lang)
+                    st.session_state.recommended_videos = yt.top3_videos(keyword, start, end, lang)
                 st.rerun()
             else:
                 st.warning("키워드를 입력해주세요!")
