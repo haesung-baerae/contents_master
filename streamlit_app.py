@@ -28,6 +28,17 @@ st.markdown(
           margin-bottom: 4px !important;
           padding-bottom: 0 !important;
         }
+        /* 마크다운으로 렌더링된 p 태그 여백 없애기 */
+        div[data-testid="stMarkdownContainer"] > p {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        /* 모든 버튼 자체의 margin 없애기 */
+        button {
+          margin: 0 !important;
+          /* 필요하면 padding도 조절 가능 */
+        }
         /* 전체 페이지 스타일 */
         .stApp {
             background-color: #f8f9fa;
@@ -326,8 +337,18 @@ def copy_button(text):
     escaped_text = text.replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
     
     copy_html = f"""
-    <button onclick="copyToClipboard()" style="background-color:#4CAF50; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-        복사하기
+    <button onclick="copyToClipboard()"
+            style="
+              background-color:#4CAF50;
+              color:white;
+              border:none;
+              padding:4px 8px;        /* 패딩도 줄이고 */
+              border-radius:4px;
+              cursor:pointer;
+              display:block;          /* block 으로 바꿔서 위아래 margin 제어가 더 쉬움 */
+              margin: 0 auto;         /* 위/아래 margin 0, 좌우 중앙 정렬 */
+            ">
+      복사하기
     </button>
     
     <script>
