@@ -9,9 +9,39 @@ from openai import OpenAI
 client = os.getenv("OPENAI_API_KEY")
 
 # 1) 스크립트 파일 읽기
-def read_script(path: str) -> str:
-    text = Path(path).read_text(encoding="utf-8")
-    return text.strip()
+# def read_script(path: str) -> str:
+#     text = Path(path).read_text(encoding="utf-8")
+#     return text.strip()
+def read_script(file_path: str) -> str | None:
+    """
+    저장된 트랜스크립트 파일을 읽어옵니다.
+    
+    Args:
+        file_path: 트랜스크립트 파일 경로
+        
+    Returns:
+        파일 내용 (문자열) 또는 실패 시 None
+    """
+    try:
+        # 파일이 존재하는지 확인
+        if not os.path.exists(file_path):
+            st.error(f"파일을 찾을 수 없습니다: {file_path}")
+            return None
+            
+        # 파일 크기 확인 (선택적)
+        file_size = os.path.getsize(file_path)
+        if file_size > 10 * 1024 * 1024:  # 10MB 이상인 경우 경고
+            st.warning(f"파일 크기가 큽니다 ({file_size / 1024 / 1024:.2f} MB). 처리하는데 시간이 걸릴 수 있습니다.")
+        
+        # 파일 읽기
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        return content
+        
+    except Exception as e:
+        st.error(f"파일을 읽는 중 오류가 발생했습니다: {str(e)}")
+        return None
 
 # 2) 단일 프롬프트 요약 (긴 파일이면 chunking 전략 추가 가능)
 def summarize(
@@ -58,7 +88,7 @@ def expand_summary_to_blog(summary_text: str, tone="friendly", target_chars=1300
     • 구체적인 예시나 비유를 하나씩 포함하고, 마지막에는 독자에게 던질 질문이나 제안을 넣어 글을 마무리해주세요.
 
     요약문:
-    "{summary_text}"
+    '{summary_text}'
 
     블로그 글:
     """
