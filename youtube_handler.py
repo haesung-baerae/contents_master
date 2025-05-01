@@ -79,30 +79,31 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | No
                 transcript_list.find_generated_transcript(['en', 'ko']).fetch()
             )
         except Exception:
-            return None  # 완전히 실패 → 상위 로직에서 None 체크
+            return video_id
+            #return None  # 완전히 실패 → 상위 로직에서 None 체크
     
     # transcript는 list[dict] (0.6.x) 또는 FetchedTranscript (iterable, 1.x)
     text_lines = [_snippet_text(s) for s in transcript]
     transcript_text = "\n".join(text_lines)
-    filename = f"{safe_name(title)}.txt"
+    # filename = f"{safe_name(title)}.txt"
     
-    # 로컬 환경인지 스트림릿 환경인지 확인하여 저장 디렉토리 결정
-    if is_local_environment():  # 이 함수는 아래에 정의
-        # 로컬 환경일 때는 원래 경로에 저장
-        base_dir = Path.home() / "Downloads"  # C:\Users\<id>\Downloads (Win) 또는 /Users/<id>/Downloads (mac)
-        save_dir = base_dir / (dirname or "transcripts")
-        save_dir.mkdir(parents=True, exist_ok=True)
-    else:
-        # 스트림릿 환경일 때는 임시 디렉토리에 저장
-        if dirname:
-            save_dir = Path(tempfile.gettempdir()) / dirname
-            save_dir.mkdir(parents=True, exist_ok=True)
-        else:
-            save_dir = Path(tempfile.gettempdir())
+    # # 로컬 환경인지 스트림릿 환경인지 확인하여 저장 디렉토리 결정
+    # if is_local_environment():  # 이 함수는 아래에 정의
+    #     # 로컬 환경일 때는 원래 경로에 저장
+    #     base_dir = Path.home() / "Downloads"  # C:\Users\<id>\Downloads (Win) 또는 /Users/<id>/Downloads (mac)
+    #     save_dir = base_dir / (dirname or "transcripts")
+    #     save_dir.mkdir(parents=True, exist_ok=True)
+    # else:
+    #     # 스트림릿 환경일 때는 임시 디렉토리에 저장
+    #     if dirname:
+    #         save_dir = Path(tempfile.gettempdir()) / dirname
+    #         save_dir.mkdir(parents=True, exist_ok=True)
+    #     else:
+    #         save_dir = Path(tempfile.gettempdir())
     
-    path = os.path.join(save_dir, filename)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(transcript_text)
+    # path = os.path.join(save_dir, filename)
+    # with open(path, "w", encoding="utf-8") as f:
+    #     f.write(transcript_text)
    
     #return path   
     return transcript_text
