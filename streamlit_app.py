@@ -481,7 +481,7 @@ def step_1():
                 """
                 st.markdown(button_html, unsafe_allow_html=True)
                 
-                if st.button("선택", key=f"sel_{i}", use_container_width=True"):
+                if st.button("선택", key=f"sel_{i}", use_container_width=True):
                     st.session_state.selected_video = v
                     st.rerun()
         
