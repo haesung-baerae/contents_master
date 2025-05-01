@@ -294,18 +294,53 @@ def render_step_indicator(current_step, total_steps=3):
 # 복사 버튼 컴포넌트 - 더 컴팩트하게 높이 조정
 # --------------------------------------------------------------------
 
-def copy_button(text: str):
-    js_literal = json.dumps(text)
-    html = f"""
-        <button onclick='navigator.clipboard.writeText({js_literal});alert("클립보드에 복사되었습니다!");' 
-                style='width:100%;padding:8px;background:linear-gradient(135deg, #4CAF50, #2E7D32);
-                color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;
-                box-shadow:0 2px 8px rgba(46,125,50,0.3);transition:all 0.3s;font-size:14px;'>
-            📋 클립보드에 복사하기
-        </button>
-    """
-    components.html(html, height=45)
-
+# def copy_button(text: str):
+#     js_literal = json.dumps(text)
+#     html = f"""
+#         <button onclick='navigator.clipboard.writeText({js_literal});alert("클립보드에 복사되었습니다!");' 
+#                 style='width:100%;padding:8px;background:linear-gradient(135deg, #4CAF50, #2E7D32);
+#                 color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;
+#                 box-shadow:0 2px 8px rgba(46,125,50,0.3);transition:all 0.3s;font-size:14px;'>
+#             📋 클립보드에 복사하기
+#         </button>
+#     """
+#     components.html(html, height=45)
+def copy_button(text):
+    """클립보드에 텍스트를 복사하는 버튼 생성"""
+    # 텍스트 이스케이프 처리
+    escaped_text = text.replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
+    
+    copy_html = f"""
+    <button onclick="copyToClipboard()" style="background-color:#4CAF50; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
+        복사하기
+    </button>
+    
+    <script>
+    function copyToClipboard() {{
+        try {{
+            // 임시 textarea 요소 생성
+            const textarea = document.createElement('textarea');
+            textarea.value = "{escaped_text}";
+            textarea.style.position = 'fixed';  // 화면에서 보이지 않게
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            // 복사 명령 실행
+            document.execCommand('copy');
+            
+            // 임시 요소 제거
+            document.body.removeChild(textarea);
+            
+            // 성공 알림
+            alert('텍스트가 클립보드에 복사되었습니다!');
+        }} catch (err) {{
+            console.error('복사 실패:', err);
+            alert('복사에 실패했습니다. 다시 시도해주세요.');
+        }}
+    }}
+    </script>
+    """    
+    st.components.v1.html(copy_html, height=50)
 # --------------------------------------------------------------------
 # STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
 # --------------------------------------------------------------------
