@@ -309,7 +309,7 @@ def copy_button(text: str):
 # --------------------------------------------------------------------
 # STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
 # --------------------------------------------------------------------
-t_path = None
+
 # 최상위 레벨에서 세션 상태 초기화 (앱이 처음 실행될 때만 실행됨)
 if 'transcript_text' not in st.session_state:
     st.session_state.transcript_text = ""
@@ -497,24 +497,22 @@ def step_2():
     if col1.button("← 이전", use_container_width=True):
         prev_step()
     if col2.button("✨ 생성", type="primary", use_container_width=True):
-        with st.spinner("콘텐츠 생성 중..."):
-            #transcript = get_video_transcript(st.session_state.selected_video["link"])
-            #transcript = sc.summarize(t_path, 3, st.session_state.tone_style)
-                # 세션 상태에서 텍스트 직접 사용
+        with st.spinner("콘텐츠 생성 중..."):            
+            # 세션 상태에서 텍스트 직접 사용
             if st.session_state.transcript_text:
                 sum_script = sc.summarize(st.session_state.transcript_text, 3, st.session_state.tone_style)
-                st.session_state.generated_content = sum_script
+                
+                st.session_state.generated_content = regenerate_content(
+                    sum_script,
+                    st.session_state.target_audience,
+                    st.session_state.tone_style,
+                    st.session_state.goal,
+                    st.session_state.word_count)
             else:
                 st.error("요약할 자막 텍스트가 없습니다.")
                 st.session_state.generated_content = "요약 실패: 자막을 찾을 수 없음"
         
-            # st.session_state.generated_content = regenerate_content(
-            #     transcript,
-            #     st.session_state.target_audience,
-            #     st.session_state.tone_style,
-            #     st.session_state.goal,
-            #     st.session_state.word_count,
-            # )
+            
         next_step()
 
 # --------------------------------------------------------------------
