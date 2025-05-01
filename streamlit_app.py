@@ -490,13 +490,14 @@ def step_2():
         with st.spinner("콘텐츠 생성 중..."):
             #transcript = get_video_transcript(st.session_state.selected_video["link"])
             transcript = sc.summarize(t_path, 3, st.session_state.tone_style)
-            st.session_state.generated_content = regenerate_content(
-                transcript,
-                st.session_state.target_audience,
-                st.session_state.tone_style,
-                st.session_state.goal,
-                st.session_state.word_count,
-            )
+            st.session_state.generated_content = transcript
+            # st.session_state.generated_content = regenerate_content(
+            #     transcript,
+            #     st.session_state.target_audience,
+            #     st.session_state.tone_style,
+            #     st.session_state.goal,
+            #     st.session_state.word_count,
+            # )
         next_step()
 
 # --------------------------------------------------------------------
