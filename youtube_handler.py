@@ -67,7 +67,7 @@ def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | No
     save_dir.mkdir(parents=True, exist_ok=True)
     
     import unicodedata
-    os.makedirs(dirname, exist_ok=True)
+    #os.makedirs(dirname, exist_ok=True)
 
     def safe_name(name):
         name = unicodedata.normalize("NFC", name)
