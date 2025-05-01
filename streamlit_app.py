@@ -309,7 +309,7 @@ def copy_button(text: str):
 # --------------------------------------------------------------------
 # STEP 1 ─ 콘텐츠 마스터 (주제 입력 & 영상 선택)
 # --------------------------------------------------------------------
-
+t_path = None
 def step_1():
     st.markdown("<div class='header'>콘텐츠 마스터</div>", unsafe_allow_html=True)
     render_step_indicator(st.session_state.step)
@@ -489,10 +489,7 @@ def step_2():
     if col2.button("✨ 생성", type="primary", use_container_width=True):
         with st.spinner("콘텐츠 생성 중..."):
             #transcript = get_video_transcript(st.session_state.selected_video["link"])
-            transcript = sc.summarize(3,
-                st.session_state.target_audience,
-                st.session_state.tone_style,
-                st.session_state.goal,)
+            transcript = sc.summarize(t_path, 3, st.session_state.tone_style)
             st.session_state.generated_content = regenerate_content(
                 transcript,
                 st.session_state.target_audience,
