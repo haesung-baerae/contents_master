@@ -104,12 +104,7 @@ def _snippet_text(snippet) -> str:
     return getattr(snippet, "text", "")
 
 # ---------- 자막(txt) 저장 ----------
-def save_transcript(video_id: str, title: str, pref_lang: str, dirname: str | None = None) -> str | None:
-    """
-    • 자막이 있으면 .txt 저장 후 경로 반환
-    • 없으면 None 반환
-    """
-
+def get_transcript(video_id: str, title: str, pref_lang: str, dirname: str | None = None) -> str | None:
     
     try:
         # ① 우선 사용자가 지정한 언어로 시도
