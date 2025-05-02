@@ -421,7 +421,7 @@ def step_1():
                 with st.spinner("검색중..."):
                     #st.session_state.recommended_videos = get_youtube_recommendations(keyword)
                     st.session_state.recommended_videos = yt.top3_videos(keyword, start, end, lang)
-                    st.seesion_state.keyword = keyword
+                    st.session_state.keyword = keyword
                 st.rerun()
             else:
                 st.warning("키워드를 입력해주세요!")
