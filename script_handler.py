@@ -48,7 +48,7 @@ def summarize(
     return resp.choices[0].message.content.strip()
 
 def expand_summary_to_blog(summary_text: str, target_audience = 'all', tone_style="friendly", goal = 'normal', target_chars=500, keyword="AI 부업"):
-      """
+    """
     요약문을 바탕으로 블로그 글을 생성합니다.
     - 글 구조: 서론, 본론(소제목 포함), 결론
     - SEO 키워드 전략 포함
