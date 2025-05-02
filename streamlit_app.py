@@ -588,7 +588,7 @@ def step_2():
             # 세션 상태에서 텍스트 직접 사용
             if st.session_state.transcript_text:
                 sum_script = sc.summarize(st.session_state.transcript_text, 3, 
-                st.session_state.tone_style, keyword = st_session_state.keyword)
+                st.session_state.tone_style, keyword = st.session_state.keyword)
                 
                 st.session_state.generated_content = sc.expand_summary_to_blog(
                     sum_script,
