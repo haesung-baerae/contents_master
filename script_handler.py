@@ -54,7 +54,7 @@ def expand_summary_to_blog(summary_text: str, target_audience = 'all', tone_styl
     - SEO 키워드 전략 포함
     """
     prompt = f"""
-    아래 요약문을 바탕으로 {tone} 톤의 블로그 글을 작성하세요.
+    아래 요약문을 바탕으로 {tone_style} 톤의 블로그 글을 작성하세요.
     • 글 전체 분량은 최소 {target_chars}자, 최대 {target_chars + 500}자 사이로 맞춰주세요.
     • 제목, 첫 문단, 소제목에 '{keyword}'를 포함하세요.
     • 소제목은 3~5개로 나누고, 각 소제목마다 200자 이상 작성해주세요.
