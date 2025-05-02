@@ -510,7 +510,7 @@ def step_1():
         )
         col1, col2 = st.columns(2)
         if col2.button("다음 →", type="primary", use_container_width=True):            
-            transcript_text = yt.save_transcript(v['id'], v['title'], lang)
+            transcript_text = yt.get_transcript(v['id'], v['title'], lang)
             
             if transcript_text:
                 st.session_state.transcript_text = transcript_text
