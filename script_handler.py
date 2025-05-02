@@ -80,7 +80,7 @@ def expand_summary_to_blog(summary_text: str, target_audience = 'all', tone_styl
         max_tokens=3000,
     )
     text = response.choices[0].message.content.strip()
-    
+    '''
     # 혹시 여기서도 부족하다면, length 체크 후 자동으로 ‘계속’ 요청
     if len(text) < target_chars:
         cont = client.chat.completions.create(
@@ -93,7 +93,7 @@ def expand_summary_to_blog(summary_text: str, target_audience = 'all', tone_styl
             temperature=0.7,
         )
         text += "\n" + cont.choices[0].message.content.strip()   
-    
+    '''
     return text
 
 
