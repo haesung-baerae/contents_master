@@ -588,14 +588,15 @@ def step_2():
             # 세션 상태에서 텍스트 직접 사용
             if st.session_state.transcript_text:
                 sum_script = sc.summarize(st.session_state.transcript_text, 3, 
-                st.session_state.tone_style, keyword = st.session_state.keyword)
+                st.session_state.tone_style)
                 
                 st.session_state.generated_content = sc.expand_summary_to_blog(
                     sum_script,
-                    st.session_state.target_audience,
-                    st.session_state.tone_style,
-                    st.session_state.goal,
-                    st.session_state.word_count_value)
+                    target_audience = st.session_state.target_audience,
+                    tone_style = st.session_state.tone_style,
+                    goal = st.session_state.goal,
+                    target_chars = st.session_state.word_count_value,
+                    keyword = st.session_state.keyword)
             else:
                 st.error("요약할 자막 텍스트가 없습니다.")
                 st.session_state.generated_content = "요약 실패: 자막을 찾을 수 없음"
