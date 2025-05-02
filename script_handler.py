@@ -10,41 +10,6 @@ from openai import OpenAI
 api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key = api_key)
 
-# 1) 스크립트 파일 읽기
-# def read_script(path: str) -> str:
-#     text = Path(path).read_text(encoding="utf-8")
-#     return text.strip()
-def read_script(file_path: str) -> str | None:
-    """
-    저장된 트랜스크립트 파일을 읽어옵니다.
-    
-    Args:
-        file_path: 트랜스크립트 파일 경로
-        
-    Returns:
-        파일 내용 (문자열) 또는 실패 시 None
-    """
-    try:
-        # 파일이 존재하는지 확인
-        if not os.path.exists(file_path):
-            st.error(f"파일을 찾을 수 없습니다: {file_path}")
-            return None
-            
-        # 파일 크기 확인 (선택적)
-        file_size = os.path.getsize(file_path)
-        if file_size > 10 * 1024 * 1024:  # 10MB 이상인 경우 경고
-            st.warning(f"파일 크기가 큽니다 ({file_size / 1024 / 1024:.2f} MB). 처리하는데 시간이 걸릴 수 있습니다.")
-        
-        # 파일 읽기
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-            
-        return content
-        
-    except Exception as e:
-        st.error(f"파일을 읽는 중 오류가 발생했습니다: {file_path} {str(e)}")
-        return None
-
 # 2) 단일 프롬프트 요약 (긴 파일이면 chunking 전략 추가 가능)
 def summarize(
     sel_script: str, 
@@ -82,15 +47,26 @@ def summarize(
     )
     return resp.choices[0].message.content.strip()
 
-def expand_summary_to_blog(summary_text: str, target_audience = 'all', tone_style="friendly", goal = 'normal', target_chars=500):
+def expand_summary_to_blog(summary_text: str, target_audience = 'all', tone_style="friendly", goal = 'normal', target_chars=500, keyword="AI 부업"):
+      """
+    요약문을 바탕으로 블로그 글을 생성합니다.
+    - 글 구조: 서론, 본론(소제목 포함), 결론
+    - SEO 키워드 전략 포함
+    """
     prompt = f"""
-    아래 요약문을 바탕으로 {tone_style} 톤의 블로그 글을 작성하세요.
-    • 글 전체 분량은 최소 {target_chars}자, 최대 {target_chars + 200}자 사이로 맞춰주세요.
-    • 소제목 3~5개를 넣고, 각 소제목마다 200자 이상 작성해주세요.
-    • 구체적인 예시나 비유를 하나씩 포함하고, 마지막에는 독자에게 던질 질문이나 제안을 넣어 글을 마무리해주세요.
+    아래 요약문을 바탕으로 {tone} 톤의 블로그 글을 작성하세요.
+    • 글 전체 분량은 최소 {target_chars}자, 최대 {target_chars + 500}자 사이로 맞춰주세요.
+    • 제목, 첫 문단, 소제목에 '{keyword}'를 포함하세요.
+    • 소제목은 3~5개로 나누고, 각 소제목마다 200자 이상 작성해주세요.
+    • 구체적인 예시나 비유를 하나씩 포함하고, 마지막에는 독자에게 던질 질문이나 제안을 넣어 글을 마무리하세요.
+    • 글 구조는 다음과 같이 작성하세요:
+        1. 서론: 독자의 관심을 끌고 문제를 정의하며 키워드를 포함.
+        2. 본론: 문제 해결 방법, 구체적인 사례, 데이터 및 통계 활용.
+        3. 결론: 제목 및 주요 키워드를 포함해 요약과 행동 유도를 명시.
+    • SEO 최적화를 위해 키워드를 본문에 최소 3~6회 자연스럽게 배치하세요.
 
     요약문:
-    '{summary_text}'
+    "{summary_text}"
 
     블로그 글:
     """
@@ -116,32 +92,17 @@ def expand_summary_to_blog(summary_text: str, target_audience = 'all', tone_styl
             max_tokens=1000,
             temperature=0.7,
         )
-        text += "\n" + cont.choices[0].message.content.strip()    
+        text += "\n" + cont.choices[0].message.content.strip()   
     
-    #print(f"블로그 글 길이: {len(text)}자")
-    #print(text)
     return text
 
 
 
 # 3) CLI 진입점 -------------------------------------------------------------
 def main():
-    # parser = argparse.ArgumentParser(description="스크립트 요약기")
-    # parser.add_argument("--file", required=True, help="요약할 .txt 파일 경로")
-    # parser.add_argument("--sentences", type=int, default=3, help="요약 문장 수")
-    # parser.add_argument(
-    #     "--tone",
-    #     type=str,
-    #     default="친근한",
-    #     help="글 톤/스타일 (예: '격식있는', '유머러스한', '논문 스타일')",
-    # )
-    # parser.add_argument("--save", action="store_true", help="결과를 _summary.txt로 저장")
-    # args = parser.parse_args()
-    #text = read_script(args.file)
-    #summary = summarize(text, sentences=args.sentences, tone=args.tone)
-    
+   
     filename = Path("transcripts")/"[테스트 후기] 미드저니 v7 미쳤는데.txt"
-    #text = read_script(args.file)
+
     text = read_script(str(filename))
     tone = '전문적인'
     summary = summarize(text, sentences=3, tone=tone)
@@ -153,34 +114,6 @@ def main():
     blog_post = expand_summary_to_blog(summary, tone=tone, target_chars=1300)
 
 
-    if True:
-        out_path = Path(filename).with_suffix("").as_posix() + "_blog.txt"
-        Path(out_path).write_text(blog_post, encoding="utf-8")
-        print(f"\nSaved to: {out_path}")
-        
-
-
-
 if __name__ == "__main__":
     main()
 
-
-from tiktoken import get_encoding
-
-ENC = get_encoding("cl100k_base")  # or tiktoken.encoding_for_model("gpt-4o-mini")
-
-def chunk_text(text, max_tokens=6000):
-    tokens = ENC.encode(text)
-    for i in range(0, len(tokens), max_tokens):
-        yield ENC.decode(tokens[i : i + max_tokens])
-
-# # ▶ chunk 별 1차 요약 → 요약들을 다시 한번 합쳐 최종 요약
-# partial_summaries = [
-#     summarize(chunk, sentences=3, tone="neutral") 
-#     for chunk in chunk_text(long_text)
-# ]
-# final_summary = summarize(
-#     "\n\n".join(partial_summaries),
-#     sentences=desired_sentences,
-#     tone=desired_tone
-# )
